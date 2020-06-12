@@ -15,5 +15,36 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+
+
+
+
+
 });
+
+
+Route::prefix('form')->group(function(){
+
+    Route::get('/', 'FormController@index')->name('form.access');
+
+    Route::post('/', 'FormController@store')->name('form.create');
+
+    Route::prefix('/{form}')->group(function(){
+
+        Route::get('/', 'FormController@show')->name('form.show');
+
+        // Route::get('/sheet', 'SheetController@show')->name('form.show');
+
+        Route::post('/sheet', 'SheetController@store')->name('form.show');
+
+    });
+
+
+
+
+    Route::put('/{form}','FormController@update')->name('form.update');
+
+    Route::delete('/{form}', 'FormController@destroy')->name('form.delete');
+
+});
+
