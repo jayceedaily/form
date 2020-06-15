@@ -13,38 +13,38 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-
+Route::post('login', 'AuthController@login');
 
 
+// Public APIs
+
+Route::post('form/{form}/sheet', 'SheetController@store');
+
+Route::get('form/{form}', 'FormController@show');
 
 
-});
+Route::middleware('auth:sanctum')->group(function() {
 
 
-Route::prefix('form')->group(function(){
+    Route::get('init', 'AuthController@init');
 
-    Route::get('/', 'FormController@index')->name('form.access');
+    Route::prefix('form')->group(function(){
 
-    Route::post('/', 'FormController@store')->name('form.create');
+        Route::get('/', 'FormController@index')->name('form.access');
 
-    Route::prefix('/{form}')->group(function(){
+        Route::post('/', 'FormController@store')->name('form.create');
 
-        Route::get('/', 'FormController@show')->name('form.show');
+        Route::put('/{form}','FormController@update')->name('form.update');
 
-        // Route::get('/sheet', 'SheetController@show')->name('form.show');
-
-        Route::post('/sheet', 'SheetController@store')->name('form.show');
+        Route::delete('/{form}', 'FormController@destroy')->name('form.delete');
 
     });
-
-
-
-
-    Route::put('/{form}','FormController@update')->name('form.update');
-
-    Route::delete('/{form}', 'FormController@destroy')->name('form.delete');
-
 });
+
+
+
+
+
+
+
 

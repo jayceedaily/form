@@ -17,7 +17,7 @@ class FormController extends Controller
      */
     public function index()
     {
-        return response(Form::latest()->paginate());
+        return response(Form::withCount('sheets')->latest()->paginate());
     }
 
     /**
