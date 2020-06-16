@@ -25,7 +25,6 @@ Route::get('form/{form}', 'FormController@show');
 
 Route::middleware('auth:sanctum')->group(function() {
 
-
     Route::get('init', 'AuthController@init');
 
     Route::prefix('form')->group(function(){
@@ -44,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
 
 
-
+    
 
 
 

@@ -6,11 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Form extends Model
 {
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'has_random_questions'];
 
     public function questions()
     {
-        return $this->hasMany('App\Models\Question');
+        return $this->hasMany('App\Models\Question')->orderBy('order_number', 'ASC');
+    }
+
+    public function randomized_questions()
+    {
+        return $this->hasMany('App\Models\Question')->inRandomOrder();
+
     }
 
     public function sheets()

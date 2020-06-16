@@ -20,8 +20,10 @@ class CreateFormsTable extends Migration
 
             $table->longText('description')->nullable();
 
+            $table->boolean('has_random_questions')->default(0);
+
             $table->timestamps();
-            
+
             $table->softDeletes();
         });
     }
