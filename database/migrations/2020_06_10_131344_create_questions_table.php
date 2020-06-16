@@ -26,6 +26,8 @@ class CreateQuestionsTable extends Migration
 
             $table->string('info')->nullable();
 
+            $table->integer('order_number');
+
             $table->boolean('is_required')->default(1);
 
             $table->timestamps();
