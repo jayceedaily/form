@@ -4,31 +4,17 @@
         <td>{{form.sheets_count}}</td>
         <td>
             <my-dropdown>
-                <div class="dropdown-trigger">
+                <template v-slot:trigger>
                     <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
                         <i class="material-icons">more_horiz</i>
                     </button>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content">
-                    <a href="#" class="dropdown-item">
-                        Dropdown item
-                    </a>
-                    <a class="dropdown-item">
-                        Other dropdown item
-                    </a>
-                    <a href="#" class="dropdown-item is-active">
-                        Active dropdown item
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        Other dropdown item
-                    </a>
-                    <hr class="dropdown-divider">
-                    <a href="#" class="dropdown-item">
-                        With a divider
-                    </a>
-                    </div>
-                </div>
+                </template>
+
+                <template  v-slot:menu >
+                        <router-link href="#" class="dropdown-item" :to="'form/' + form.id">View</router-link>
+                        <a class="dropdown-item">Delete</a>
+                </template  v-slot:menu>
+
             </my-dropdown>
         </td>
     </tr>

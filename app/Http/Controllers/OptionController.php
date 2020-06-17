@@ -57,7 +57,6 @@ class OptionController extends Controller
      */
     public function edit(Option $option)
     {
-        //
     }
 
     /**
@@ -69,7 +68,9 @@ class OptionController extends Controller
      */
     public function update(Request $request, Option $option)
     {
-        //
+        $option->update($request->all());
+
+        return response($option, 200);
     }
 
     /**

@@ -38,12 +38,20 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/{form}', 'FormController@destroy')->name('form.delete');
 
     });
+
+
+    Route::prefix('option')->group(function(){
+        Route::put('/{option}', 'OptionController@update')->name('option.edit');
+
+    });
+
+
 });
 
 
 
 
-    
+
 
 
 

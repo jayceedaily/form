@@ -1,12 +1,24 @@
 <template>
-    <div class="dropdown is-hoverable">
-        <slot></slot>
+    <div class="dropdown is-hoverable" :class="showMenu ? 'is-active' : ''">
+        <div @click="showMenu =! showMenu" class="dropdown-trigger">
+            <slot name="trigger"/>
+        </div>
+        <div class="dropdown-menu" role="menu" >
+            <div class="dropdown-content"  @click="showMenu = false">
+                <slot name="menu"/>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'MyDropdown'
+    name: 'MyDropdown',
+    data: function() {
+        return {
+            showMenu: false,
+        }
+    },
 }
 </script>
 
