@@ -1,14 +1,19 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import camelCase from 'lodash/camelCase';
+
+const requireModule = require.context('.', false, /\.js$/)
 
 Vue.use(Vuex);
 
-import {auth} from './auth';
-import {form} from './form';
-import {option} from './option';
+const modules = {};
 
-export const store = new Vuex.Store({modules: {
-    auth,
-    form,
-    option,
-}})
+requireModule.keys().forEach(filename => {
+    if(filename === './index.js') return
+
+    let moduleName  = camelCase(filename.replace(/(\.\/|\.js)/g, ''));
+
+    modules[moduleName] = requireModule(filename)[moduleName];
+})
+
+export const store = new Vuex.Store({modules})

@@ -3,13 +3,14 @@
 
   <div id="navbarBasicExample" class="navbar-menu container">
 
-
+    <div class="navbar-start">
+        <a class="navbar-item is-loading">
+            {{leftText}}
+        </a>
+    </div>
     <div class="navbar-end">
         <router-link class="navbar-item" to="/">Dashboard</router-link>
         <router-link class="navbar-item" to="/form">Form</router-link>
-
-
-
         <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
             {{user.name}}
@@ -39,7 +40,7 @@ import { mapGetters } from 'vuex'
 export default {
     name: 'TheNav',
     computed:{
-        ...mapGetters({user:'auth/user'})
+        ...mapGetters({user:'auth/user', leftText: 'nav/leftText'})
     }
 }
 </script>

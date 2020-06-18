@@ -64,7 +64,7 @@ export default {
     },
 
     methods: {
-        ...mapActions({updateOption:'option/update', selectOption :'option/select'}),
+        ...mapActions({updateOption:'option/update', selectOption :'option/select', loadLeftTextNav:'nav/loadLeftText'}),
 
         saveChanges: function() {
 
@@ -73,11 +73,18 @@ export default {
                 console.log('create new')
 
             } else {
-                console.log('update existing')
+
+                this.loadLeftTextNav('Saving...');
 
                 this.selectOption(this.questionOption);
 
-                this.updateOption(this.questionOption);
+                this.updateOption(this.questionOption).then((response)=>{
+                    if(response.status == 200) {
+                        this.loadLeftTextNav('Saved');
+                    } else {
+                        this.loadLeftTextNav('Something went wrong');
+                    }
+                });
 
             }
         }

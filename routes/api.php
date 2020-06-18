@@ -45,6 +45,11 @@ Route::middleware('auth:sanctum')->group(function() {
 
     });
 
+    Route::prefix('question')->group(function(){
+        Route::put('/{question}', 'QuestionController@update')->name('question.edit');
+
+    });
+
 
 });
 

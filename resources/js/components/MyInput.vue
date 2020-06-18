@@ -13,7 +13,6 @@
 export default {
     name: 'MyInput',
 
-    // props: ['value', 'label', 'errors', 'type', 'required'],
     props: {
         value: {
             required: false,
@@ -46,10 +45,19 @@ export default {
     data: function() {
         return {
             component_value: this.value ? this.value : '',
+
+            isTyping: false,
         }
     },
     methods:{
         handleInput: function() {
+
+            clearTimeout(this.isTyping);
+
+            this.isTyping = setTimeout(()=>{
+                this.$emit('doneTyping');
+            }, 800);
+
             this.$emit('input', this.component_value);
         }
     }

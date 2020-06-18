@@ -16,7 +16,7 @@
 
             <div class="columns">
                 <div class="column is-8">
-                    <my-input v-model="question.content" />
+                    <my-input v-model="question.content"/>
                 </div>
                 <div class="column is-4">
                     <div class="select">
@@ -57,6 +57,7 @@
 
 <script>
 import OptionItem from './OptionItem'
+import { mapActions } from 'vuex';
 
 export default {
     name: 'QuestionItem',
@@ -64,7 +65,33 @@ export default {
     components:{
         OptionItem
     },
+    data: function() {
+        return {
+            isTyping: false,
+        }
+    },
+    watch: {
+        question: {
+            handler: function() {
+                clearTimeout(this.isTyping);
+
+                this.isTyping = setTimeout(() => {
+                    
+                });
+            },
+
+            deep: true
+        }
+    },
+
     methods: {
+
+        ...mapActions({ updateQuestion:'question/update',
+                        selectQuestion:'question/select',
+                        addOptionQuestion: 'question/addOption',
+                        loadLeftTextNav:'nav/loadLeftText'
+                        }),
+
         addOption: function() {
             this.question.options.push({
                 content: null,
@@ -72,7 +99,22 @@ export default {
                 is_correct: null,
                 is_new: true,
             });
-        }
+        },
+
+        saveChanges: function() {
+
+            this.loadLeftTextNav('Saving...');
+
+            this.selectQuestion(this.question);
+
+            this.updateQuestion(this.question).then((response) => {
+                this.loadLeftTextNav('Saved');
+            })
+        },
+
+        addOption: function() {
+
+        },
     }
 }
 </script>
