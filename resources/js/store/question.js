@@ -19,9 +19,12 @@ export const question = {
     actions: {
         ...base.actions,
 
-        addOption: function() {
+        addOption: async ({commit,state}, data) => {
+            let response = await http.store(state.endpoint + '/' + state.selected.id + '/option', data);
 
-        }
+            return response;
+        },
+
     },
 
     getters: {

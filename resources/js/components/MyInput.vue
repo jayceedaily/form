@@ -2,7 +2,7 @@
     <div class="field">
         <p><label>{{label}}</label></p>
         <div class="control">
-            <input :type="type" class="input" @input="handleInput" v-model="component_value" :required="required">
+            <input :type="type" class="input" v-on="listeners" :value="value" :required="required">
         </div>
         <span class="has-text-danger">{{errors}}</span>
     </div>
@@ -41,14 +41,15 @@ export default {
             default: false
         }
     },
-
-    data: function() {
-        return {
-            component_value: this.value ? this.value : '',
-
-            isTyping: false,
+    computed: {
+        listeners: function() {
+            return {
+                ...this.$listeners,
+                input: event => this.$emit('input', event.target.value)
+            }
         }
     },
+
     methods:{
         handleInput: function() {
 

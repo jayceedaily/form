@@ -20,7 +20,7 @@ class CreateQuestionsTable extends Migration
 
             $table->foreign('form_id')->references('id')->on('forms');
 
-            $table->string('content');
+            $table->string('content')->nullable();
 
             $table->longText('description')->nullable();
 

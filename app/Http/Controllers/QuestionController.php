@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Form;
 use App\Models\Question;
 use Illuminate\Http\Request;
 
@@ -33,20 +34,11 @@ class QuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Form $form)
     {
-        //
-    }
+        $question = $form->questions()->create($request->all());
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Question $question)
-    {
-        //
+        return response($question, 201);
     }
 
     /**
@@ -82,6 +74,8 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $question->delete();
+
+        return response(NULL, 200);
     }
 }

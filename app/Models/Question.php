@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class Question extends Model
 {
     protected $fillable = ['content', 'description', 'is_required', 'order_number'];
@@ -14,7 +12,26 @@ class Question extends Model
 
         static::creating(function ($question)
         {
-            $question->order_number = $question->form->questions()->count()+1;
+            if($question->order_number == null) {
+
+                $question->order_number = $question->form->questions()->count() + 1;
+            } else {
+
+                $questions = self::where('order_number', '>=', $question->order_number)
+                                 ->orderBy('order_number', 'ASC')
+                                 ->get();
+
+                $new_order_number = $question->order_number + 1;
+
+                foreach ($questions as $_question) {
+
+                    $_question->order_number = $new_order_number;
+
+                    $_question->update();
+
+                    $new_order_number++;
+                }
+            }
         });
     }
 

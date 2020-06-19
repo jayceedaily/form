@@ -21,33 +21,45 @@
                     </div>
                 </div>
             </div>
-
-            <transition-group>
-                <div class="columns" v-for="question in form.questions" :key="question.id">
+            <div v-if="form.questions.length > 0">
+                <transition-group>
+                    <div class="columns" v-for="(question, index) in form.questions" :key="question.id">
+                        <div class="column is-8 is-offset-2">
+                            <question-item :question="question" :order="index+1" @addQuestion="handleAddQuestion" @deleteQuestion="showDeleteQuestionModal=true" :id="'question'+question.id"/>
+                        </div>
+                    </div>
+                </transition-group>
+            </div>
+            <div v-else>
+                <div class="columns">
                     <div class="column is-8 is-offset-2">
-                        <question-item :question="question"/>
+                        <question-item @addQuestion="handleAddQuestion" />
                     </div>
                 </div>
-            </transition-group>
-
+            </div>
         </div>
-
     </div>
+
+    <delete-question-modal v-if="showDeleteQuestionModal" @close="showDeleteQuestionModal=false"/>
+
 </div>
 </template>
 
 <script>
 import {mapActions,mapGetters} from 'vuex';
 import QuestionItem from './QuestionItem';
+import DeleteQuestionModal from './DeleteQuestionModal';
 
 export default {
     name: 'ShowForm',
     components: {
         QuestionItem,
+        DeleteQuestionModal,
     },
     data: function() {
         return {
             isLoading: true,
+            showDeleteQuestionModal: false
         }
     },
 
@@ -62,7 +74,41 @@ export default {
     },
 
     methods: {
-        ...mapActions({showForm: 'form/show'}),
+        ...mapActions({showForm: 'form/show', addQuestionForm:'form/addQuestion'}),
+
+        handleAddQuestion: function(value) {
+
+            console.log(value)
+
+            var VueScrollTo = require('vue-scrollto');
+
+            Array.prototype.insert = function ( index, item ) {
+                this.splice( index, 0, item );
+            };
+
+            this.addQuestionForm(Number.isInteger(value) ? {
+                content: '',
+                description: '',
+                is_required: 1,
+                order_number: value,
+                } : value).then((response) => {
+                if(response.status == 201) {
+                    this.form.questions.insert(value-1 ,response.data);
+
+
+                    setTimeout(()=>{
+                        VueScrollTo.scrollTo('#question'+response.data.id,300, {offset:-30})
+                    }, 100)
+
+                }
+
+
+            });
+        },
+
+        handleDeleteQuestion: function() {
+
+        }
     }
 }
 </script>

@@ -14,10 +14,31 @@ export const form = {
     mutations: {
         ...base.mutations,
 
+        removeQuestion: (state, id) => {
+
+            let index = state.selected.questions.findIndex( list_item => list_item.id == id );
+
+           if(index !== false) {
+
+                state.selected.questions.splice(index, 1);
+           }
+        }
+
     },
 
     actions: {
         ...base.actions,
+
+        addQuestion: async({commit, state}, data) => {
+            let response = await http.post(state.endpoint + '/'+state.selected.id + '/question', data);
+
+            return response;
+        },
+
+        removeQuestion: ({commit}, question)=> {
+
+            commit('removeQuestion', question);
+        }
 
 
     },

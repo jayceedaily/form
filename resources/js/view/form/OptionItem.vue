@@ -1,11 +1,8 @@
 <template>
+    <div>
         <div class="columns">
             <div class="column is-11">
-
-
-
                 <div class="field is-horizontal">
-
                     <div style="display: flex; align-items: center; justify-content: center;">
 
                         <i class="material-icons has-text-grey-lighter">crop_din</i>
@@ -21,9 +18,20 @@
                 </div>
             </div>
             <div class="column is-1" style="display: flex; align-items: center; justify-content: center;">
-                <i class="material-icons is-size-6">close</i>
+                <i class="material-icons is-size-6" style="cursor:pointer" @click="handleDeleteOption">close</i>
             </div>
         </div>
+        <div class="columns">
+            <div class="column" v-if="questionOption.info != null && questionOption.info != ''">
+                <label for=""></label>
+                <textarea name="" id="" cols="30" rows="1" class="textarea" v-model="questionOption.info"></textarea>
+            </div>
+            <div v-else class="column" >
+                <a style="padding-left:35px" @click="questionOption.info = ' '">Add info</a>
+            </div>
+        </div>
+
+    </div>
 
 </template>
 
@@ -64,13 +72,19 @@ export default {
     },
 
     methods: {
-        ...mapActions({updateOption:'option/update', selectOption :'option/select', loadLeftTextNav:'nav/loadLeftText'}),
+        ...mapActions({updateOption:'option/update',
+        selectOption :'option/select',
+        loadLeftTextNav:'nav/loadLeftText',
+        deleteOption: 'option/delete'
+        }),
 
         saveChanges: function() {
 
-            if(this.questionOption.is_new === true) {
+            console.log(this.questionOption)
 
-                console.log('create new')
+            if(this.questionOption.id  == null) {
+
+                this.$emit('createOption', this.questionOption);
 
             } else {
 
@@ -87,6 +101,16 @@ export default {
                 });
 
             }
+        },
+
+        handleDeleteOption: function() {
+
+            this.selectOption(this.questionOption);
+
+            this.deleteOption().then(reponse => {
+                this.$emit('delete', this.questionOption)
+            });
+
         }
 
     }

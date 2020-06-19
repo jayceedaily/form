@@ -37,18 +37,29 @@ Route::middleware('auth:sanctum')->group(function() {
 
         Route::delete('/{form}', 'FormController@destroy')->name('form.delete');
 
+        Route::post('/{form}/question', 'QuestionController@store')->name('question.create');
+
     });
 
-
     Route::prefix('option')->group(function(){
+
         Route::put('/{option}', 'OptionController@update')->name('option.edit');
+
+        Route::delete('/{option}', 'OptionController@destroy')->name('option.delete');
 
     });
 
     Route::prefix('question')->group(function(){
+
         Route::put('/{question}', 'QuestionController@update')->name('question.edit');
 
+        Route::delete('/{question}', 'QuestionController@destroy')->name('question.delete');
+
+        Route::post('/{question}/option', 'OptionController@store')->name('option.create');
+
     });
+
+
 
 
 });

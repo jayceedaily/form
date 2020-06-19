@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class Form extends Model
 {
     protected $fillable = ['name', 'description', 'has_random_questions'];
