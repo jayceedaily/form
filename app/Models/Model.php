@@ -19,7 +19,7 @@ class Model extends Eloquent
             $this->created_by = Auth::user()->id;
         };
 
-        parent::save($options);
+        return parent::save($options);
     }
 
     public function update(Array $attributes = [], Array $options = [])
@@ -29,7 +29,7 @@ class Model extends Eloquent
             $this->updated_by = Auth::user()->id;
         }
 
-        parent::update($attributes, $options);
+        return parent::update($attributes, $options);
     }
 
     public function delete(Array $attributes = [], Array $options = [])
@@ -39,7 +39,7 @@ class Model extends Eloquent
             $this->deleted_by = Auth::user()->id;
         }
 
-        parent::delete($attributes, $options);
+        return parent::delete($attributes, $options);
     }
 
     public static function findOrDie($id, $field = 'id')

@@ -128,7 +128,7 @@ export default {
             this.question.options.push({
                 content: null,
                 info: null,
-                is_correct: null,
+                is_correct: false,
                 id: null,
             });
         },

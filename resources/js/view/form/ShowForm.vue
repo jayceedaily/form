@@ -16,15 +16,16 @@
                     <div class="card">
                         <div class="card-content">
                             <h1 class="is-size-3 mb-10">{{form.name}}</h1>
-                            <p class="">{{form.description}}</p>
+                            <p class="" style="white-space: pre-wrap;">{{form.description}}</p>
+                            <textarea name="" id="" cols="30" rows="10" class="textarea" v-model="form.description"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
             <div v-if="form.questions.length > 0">
-                <transition-group>
-                    <div class="columns" v-for="(question, index) in form.questions" :key="question.id">
-                        <div class="column is-8 is-offset-2">
+                <transition-group name="list-complete">
+                    <div class="columns  list-complete-item" v-for="(question, index) in form.questions" :key="question.id">
+                        <div class="column is-8 is-offset-2" >
                             <question-item :question="question" :order="index+1" @addQuestion="handleAddQuestion" @deleteQuestion="showDeleteQuestionModal=true" :id="'question'+question.id"/>
                         </div>
                     </div>
@@ -67,6 +68,8 @@ export default {
         ...mapGetters({form:'form/selected'}),
     },
 
+    
+
     created: function() {
         this.showForm(this.$route.params.id).then((r) => {
             this.isLoading = false;
@@ -77,8 +80,6 @@ export default {
         ...mapActions({showForm: 'form/show', addQuestionForm:'form/addQuestion'}),
 
         handleAddQuestion: function(value) {
-
-            console.log(value)
 
             var VueScrollTo = require('vue-scrollto');
 
@@ -95,24 +96,30 @@ export default {
                 if(response.status == 201) {
                     this.form.questions.insert(value-1 ,response.data);
 
-
                     setTimeout(()=>{
-                        VueScrollTo.scrollTo('#question'+response.data.id,300, {offset:-30})
+                        VueScrollTo.scrollTo('#question'+response.data.id,1000, {offset:-30})
                     }, 100)
 
                 }
-
-
             });
         },
-
-        handleDeleteQuestion: function() {
-
-        }
     }
 }
 </script>
 
 <style>
-
+.list-complete-item {
+  transition: all 1s;
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+    width: 100%;
+  position: absolute;
+}
 </style>

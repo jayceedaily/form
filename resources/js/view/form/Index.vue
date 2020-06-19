@@ -1,5 +1,10 @@
 <template>
 <div class="container">
+    <div class="columns">
+        <div class="column">
+            <button class="button is-primary">Create form</button>
+        </div>
+    </div>
 <div class="columns">
     <div class="column">
         <div class="card">

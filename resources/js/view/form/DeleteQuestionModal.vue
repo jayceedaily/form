@@ -45,7 +45,7 @@ export default {
 
             this.deleteQuestion().then(response => {
                 if(response.status == 200) {
-
+                    console.log('delete');
                     this.removeQuestionForm(_temp_question);
                 }
 

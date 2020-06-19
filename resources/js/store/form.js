@@ -14,9 +14,9 @@ export const form = {
     mutations: {
         ...base.mutations,
 
-        removeQuestion: (state, id) => {
+        removeQuestion: (state, question) => {
 
-            let index = state.selected.questions.findIndex( list_item => list_item.id == id );
+            let index = state.selected.questions.findIndex( list_item => list_item.id == question.id );
 
            if(index !== false) {
 

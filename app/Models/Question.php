@@ -17,7 +17,7 @@ class Question extends Model
                 $question->order_number = $question->form->questions()->count() + 1;
             } else {
 
-                $questions = self::where('order_number', '>=', $question->order_number)
+                $questions = $question->form->questions()->where('order_number', '>=', $question->order_number)
                                  ->orderBy('order_number', 'ASC')
                                  ->get();
 
@@ -32,7 +32,28 @@ class Question extends Model
                     $new_order_number++;
                 }
             }
+
         });
+
+        static::deleting(function($question){
+
+            $questions = $question->form->questions()->where('order_number', '>', $question->order_number)
+                                 ->orderBy('order_number', 'ASC')
+                                 ->get();
+
+            $new_order_number = $question->order_number;
+
+            foreach ($questions as $_question) {
+
+                $_question->order_number = $new_order_number;
+
+                $_question->update();
+
+                $new_order_number++;
+            }
+        });
+
+
     }
 
     public function options()
@@ -42,7 +63,7 @@ class Question extends Model
 
     public function form()
     {
-        return $this->belongsTo('app\Models\Form');
+        return $this->belongsTo('App\Models\Form');
     }
 
 
