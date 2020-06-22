@@ -66,5 +66,14 @@ class Question extends Model
         return $this->belongsTo('App\Models\Form');
     }
 
+    public function sheets()
+    {
+        return $this->hasMany('App\Models\Sheet');
+    }
+
+    public function answers()
+    {
+        return $this->hasMany('App\Models\Answer');
+    }
 
 }

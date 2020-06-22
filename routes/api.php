@@ -39,6 +39,9 @@ Route::middleware('auth:sanctum')->group(function() {
 
         Route::post('/{form}/question', 'QuestionController@store')->name('question.create');
 
+        Route::get('/{form}/answer', 'FormController@answer')->name('answer.view');
+
+        Route::get('/{form}/download', 'FormController@download')->name('form.access');
     });
 
     Route::prefix('option')->group(function(){

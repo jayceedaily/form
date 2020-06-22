@@ -128,5 +128,22 @@ export const http = {
                     {
                         return error.response;
                     });
-	}
+    },
+
+    download: async () => {
+        axios({
+            url: '/api/form/1/download',
+            method: 'GET',
+            responseType: 'blob',
+        }).then((response) => {
+             var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+             var fileLink = document.createElement('a');
+
+             fileLink.href = fileURL;
+             fileLink.setAttribute('download', 'file.xlsx');
+             document.body.appendChild(fileLink);
+
+             fileLink.click();
+        });
+    }
 }

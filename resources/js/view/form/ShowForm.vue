@@ -12,37 +12,74 @@
     <div v-else>
         <div class="container">
             <div class="columns">
-                <div class="column is-8 is-offset-2">
-                    <div class="card">
-                        <div class="card-content">
-                            <h1 class="is-size-3 mb-10">{{form.name}}</h1>
-                            <p class="" style="white-space: pre-wrap;">{{form.description}}</p>
-                            <textarea name="" id="" cols="30" rows="10" class="textarea" v-model="form.description"></textarea>
-                        </div>
+                <div class="column  is-8 is-offset-2">
+                    <div class="tabs is-centered">
+                        <ul>
+                            <router-link tag="li" :to="'/form/'+form.id"><a href="">Questions</a></router-link>
+                            <router-link tag="li" :to="'/form/'+form.id + '/response'"><a href=""><span class="mr-10">Responses</span><span class="tag is-rounded is-primary">{{form.sheets_count}}</span></a></router-link>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div v-if="form.questions.length > 0">
-                <transition-group name="list-complete">
-                    <div class="columns  list-complete-item" v-for="(question, index) in form.questions" :key="question.id">
-                        <div class="column is-8 is-offset-2" >
-                            <question-item :question="question" :order="index+1" @addQuestion="handleAddQuestion" @deleteQuestion="showDeleteQuestionModal=true" :id="'question'+question.id"/>
-                        </div>
-                    </div>
-                </transition-group>
-            </div>
-            <div v-else>
+            <div v-if="!showFormResponse">
                 <div class="columns">
                     <div class="column is-8 is-offset-2">
-                        <question-item @addQuestion="handleAddQuestion" />
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="columns">
+                                    <div class="column">
+                                        <my-dropdown class="is-pulled-right" style="width:20px!important;" compact>
+                                            <template v-slot:trigger>
+                                                <span style="cursor:pointer"><i class="material-icons is-pulled-right">more_horiz</i></span>
+                                            </template>
+                                            <template v-slot:menu style="min-width:auto!important;">
+                                                <a @click="handleAddQuestion(1)" class="dropdown-item " style="padding-right:1rem"><i class="material-icons">add_circle_outline</i></a>
+                                                <!-- <a @click="deleteQuestion"  class="dropdown-item " style="padding-right:1rem"><i class="material-icons">remove_circle_outline</i></a> -->
+                                                <router-link to="" class="dropdown-item " style="padding-right:1rem"><i class="material-icons">text_fields</i></router-link>
+                                            </template>
+                                        </my-dropdown>
+                                    </div>
+                                </div>
+                                <div class="columns">
+                                    <div class="column">
+                                        <input type="text" class="input" v-model="form.name" @input="handleChanges"/>
+                                    </div>
+                                </div>
+                                <div class="columns">
+                                    <div class="column">
+                                        <textarea name="" id="" cols="30" rows="10" class="textarea" v-model="form.description" @input="handleChanges"></textarea>
+                                    </div>
+                                </div>
+                                <!-- <h1 class="is-size-3 mb-10">{{form.name}}</h1> -->
+                                <!-- <p class="" style="white-space: pre-wrap;">{{form.description}}</p> -->
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div v-if="form.questions.length > 0">
+                    <transition-group name="list-complete">
+                        <div class="columns  list-complete-item" v-for="(question, index) in form.questions" :key="question.id">
+                            <div class="column is-8 is-offset-2" >
+                                <question-item :question="question" :order="index+1" @addQuestion="handleAddQuestion" @deleteQuestion="showDeleteQuestionModal=true" :id="'question'+question.id"/>
+                            </div>
+                        </div>
+                    </transition-group>
+                </div>
+                <div v-else>
+                    <div class="columns">
+                        <div class="column is-8 is-offset-2">
+                            <question-item @addQuestion="handleAddQuestion" />
+                        </div>
+                    </div>
+                </div>
+                <delete-question-modal v-if="showDeleteQuestionModal" @close="showDeleteQuestionModal=false"/>
             </div>
+            <div v-else>
+                <show-form-response />
+            </div>
+
         </div>
     </div>
-
-    <delete-question-modal v-if="showDeleteQuestionModal" @close="showDeleteQuestionModal=false"/>
-
 </div>
 </template>
 
@@ -50,25 +87,31 @@
 import {mapActions,mapGetters} from 'vuex';
 import QuestionItem from './QuestionItem';
 import DeleteQuestionModal from './DeleteQuestionModal';
+import ShowFormResponse from './ShowFormResponse';
 
 export default {
     name: 'ShowForm',
     components: {
         QuestionItem,
         DeleteQuestionModal,
+        ShowFormResponse
     },
+
     data: function() {
         return {
             isLoading: true,
-            showDeleteQuestionModal: false
+            showDeleteQuestionModal: false,
+            isTyping: null,
         }
     },
 
     computed: {
         ...mapGetters({form:'form/selected'}),
-    },
 
-    
+        showFormResponse: function() {
+            return this.$route.name == 'ShowFormResponse';
+        }
+    },
 
     created: function() {
         this.showForm(this.$route.params.id).then((r) => {
@@ -77,7 +120,10 @@ export default {
     },
 
     methods: {
-        ...mapActions({showForm: 'form/show', addQuestionForm:'form/addQuestion'}),
+        ...mapActions({showForm: 'form/show',
+                        addQuestionForm:'form/addQuestion',
+                        updateForm: 'form/update'
+                        }),
 
         handleAddQuestion: function(value) {
 
@@ -99,10 +145,18 @@ export default {
                     setTimeout(()=>{
                         VueScrollTo.scrollTo('#question'+response.data.id,1000, {offset:-30})
                     }, 100)
-
                 }
             });
         },
+
+        handleChanges: function() {
+            clearTimeout(this.isTyping)
+
+            this.isTyping = setTimeout(()=>{
+                this.updateForm(this.form);
+            }, 1000);
+
+        }
     }
 }
 </script>

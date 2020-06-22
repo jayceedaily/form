@@ -9,6 +9,8 @@ export const form = {
         ...base.state,
 
         endpoint: '/form',
+
+        sheets: [],
     },
 
     mutations: {
@@ -22,12 +24,26 @@ export const form = {
 
                 state.selected.questions.splice(index, 1);
            }
+        },
+
+        loadSheets: (state, responses) => {
+            state.responses = responses;
         }
 
     },
 
     actions: {
         ...base.actions,
+
+        loadSheets: async({commit, state}) => {
+            let response = await http.get(state.endpoint + '/' + state.selected.id + '/sheet');
+
+            if(response.status == 200) {
+
+            }
+
+            return response;
+        },
 
         addQuestion: async({commit, state}, data) => {
             let response = await http.post(state.endpoint + '/'+state.selected.id + '/question', data);
@@ -38,6 +54,12 @@ export const form = {
         removeQuestion: ({commit}, question)=> {
 
             commit('removeQuestion', question);
+        },
+
+        downloadResponse: async ({commit, state}) => {
+            let response = await http.download(state.endpoint + '/'+state.selected.id + '/download');
+
+            return response;
         }
 
 
@@ -45,6 +67,10 @@ export const form = {
 
     getters: {
         ...base.getters,
+
+        sheets: (state) => {
+            return state.sheets;
+        }
 
     }
 

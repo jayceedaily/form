@@ -11,7 +11,7 @@
                         <template v-slot:menu style="min-width:auto!important;">
                             <a @click="addQuestion" class="dropdown-item " style="padding-right:1rem"><i class="material-icons">add_circle_outline</i></a>
                             <a @click="deleteQuestion"  class="dropdown-item " style="padding-right:1rem"><i class="material-icons">remove_circle_outline</i></a>
-                            <router-link to="" class="dropdown-item " style="padding-right:1rem"><i class="material-icons">text_fields</i></router-link>
+                            <!-- <router-link to="" class="dropdown-item " style="padding-right:1rem"><i class="material-icons">text_fields</i></router-link> -->
                         </template>
                     </my-dropdown>
                 </div>

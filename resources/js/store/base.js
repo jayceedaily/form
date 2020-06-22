@@ -4,7 +4,6 @@ import {router} from '../router'
 
 export const base = {
 
-
     namespaced: true,
 
     state: {
@@ -55,9 +54,7 @@ export const base = {
         },
 
         select: (state, item) => {
-
             state.selected = item;
-
         },
 
         updateItem: (state, item) => {
@@ -87,10 +84,10 @@ export const base = {
 
             let index = state.items.findIndex( list_item => list_item.id == item.id );
 
-           if(index !== false) {
+            if(index !== false) {
 
-               state.items.splice(index, 1);
-           }
+                state.items.splice(index, 1);
+            }
         },
 
         preppend: (state, item) => {
@@ -206,6 +203,7 @@ export const base = {
         show: async({commit, state}, id) => {
 
             let response = await http.get(state.endpoint + '/' + id);
+
 
             if(response.status == 200) {
                 commit('select',  response.data);

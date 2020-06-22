@@ -80,8 +80,6 @@ export default {
 
         saveChanges: function() {
 
-            console.log(this.questionOption)
-
             if(this.questionOption.id  == null) {
 
                 this.$emit('createOption', this.questionOption);
@@ -110,11 +108,8 @@ export default {
             this.deleteOption().then(reponse => {
                 this.$emit('delete', this.questionOption)
             });
-
         }
-
     }
-
 }
 </script>
 

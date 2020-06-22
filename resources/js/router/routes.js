@@ -30,4 +30,13 @@ export const routes = [
             title: 'Show Form'
         }
     },
+
+    {
+        path: '/form/:id/response',
+        name: 'ShowFormResponse',
+        component: ShowForm,
+        meta: {
+            title: 'Show Form'
+        }
+    },
 ];

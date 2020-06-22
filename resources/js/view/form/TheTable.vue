@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th>Form Title</th>
-                <th>Participants</th>
+                <th>Responses</th>
                 <th></th>
             </tr>
         </thead>

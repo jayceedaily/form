@@ -8,4 +8,11 @@ class Sheet extends Model
     {
         return $this->hasMany('App\Models\Answer');
     }
+
+    public function form()
+    {
+        return $this->belongsTo('App\Models\Form');
+    }
+
+
 }

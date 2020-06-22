@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use App\Models\Answer;
 use App\Models\Option;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Requests\FormCreateRequest;
+use App\Exports\AnswerExport;
+use Illuminate\Support\Str;
 
 class FormController extends Controller
 {
@@ -58,30 +61,14 @@ class FormController extends Controller
      */
     public function show(Form $form)
     {
-        return response($form->load('questions.options'), 200);
+        return response($form->load('questions.options')->loadCount('sheets'), 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Form  $form
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Form $form)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Form  $form
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Form $form)
     {
-        //
+        $form->update($request->all());
+
+        return response($form, 200);
     }
 
     /**
@@ -93,5 +80,10 @@ class FormController extends Controller
     public function destroy(Form $form)
     {
         //
+    }
+
+    public function download(Form $form)
+    {
+        return \Excel::download(new AnswerExport($form),Str::snake($form->name) . '.xlsx');
     }
 }
