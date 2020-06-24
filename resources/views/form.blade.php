@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{$form->name}}</title>
     <link rel="stylesheet" href="{{mix('css/app.css')}}">
-    <style>
+    {{-- <style>
         .is-primary {
             background-color: {{$form->color}} !important;
         }
-    </style>
+    </style> --}}
 
 </head>
 <body>
@@ -28,7 +28,6 @@
                                 @if(isset(request()->query('questions')[$question->id]))
 
                                     <input type="hidden" name="questions[{{$question->id}}][content]" value="{{request()->query('questions')[$question->id]['content']}}">
-
                                     @php
                                         continue
                                     @endphp
@@ -47,6 +46,11 @@
                                                         <input type="radio" name="questions[{{$question->id}}][content]" id="" value="{{$option->content}}">
                                                         {{$option->content}}
                                                     </label>
+
+                                                    <p>
+
+                                                    </p>
+
                                                 @endforeach
 
 
@@ -62,6 +66,8 @@
 
                                                 <input class="input" type="text" name="questions[{{$question->id}}][content]" id="">
                                         @endswitch
+                                        <span class="has-text-danger" id="error-questions_{{$question->id}}"></span>
+
                                 </div>
                                 <hr>
                             @endforeach
@@ -69,29 +75,61 @@
                             <button class="button is-primary" type="submit">Submit</button>
 
                         </form>
+
+                        <p class="is-size-3" id="sheetSubmitted">Your feedback has been submitted.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
 </body>
 </html>
 <script
-			  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-			  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+			  src="https://code.jquery.com/jquery-3.5.1.js"
+			  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			  crossorigin="anonymous"></script>
 <script>
 
+$(document).ready(function() {
 
-$('#sheetForm').submit(function(e){
-    e.preventDefault();
+        $('#sheetSubmitted').hide();
 
-    console.log('submitting');
+        $('#sheetForm').submit(function(e){
+            e.preventDefault();
 
-    let form = $(this).serializeArray();
+            console.log('submitting');
 
-    console.log(form);
+            let data    = $(this).serializeArray();
+            let url     = $(this).attr('action');
+            let method     = $(this).attr('method');
+
+            $.ajax({
+                url,
+                data,
+                method,
+
+                error: function(response) {
+
+                    $("div[id^='error-'],span[id^='error-']").empty();
+
+                    $.each(response.responseJSON, function(field, message) {
+
+                        let _field = field.split('.').join('_');
+                        console.log(_field);
+
+                        $(`#error-${_field}`).html(message
+                                .join(' ,'))
+                            .removeClass('animated shake')
+                            .width('auto').addClass('animated shake');
+                    });
+                },
+
+                success: function() {
+                    $('#sheetForm').hide();
+                    $('#sheetSubmitted').show();
+                }
+            });
+        })
 })
 
 
