@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{$form->name}}</title>
     <link rel="stylesheet" href="{{mix('css/app.css')}}">
-    {{-- <style>
+    <style>
         .is-primary {
             background-color: {{$form->color}} !important;
         }
-    </style> --}}
+    </style>
 
 </head>
 <body>
