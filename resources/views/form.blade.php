@@ -72,7 +72,7 @@
                                 <hr>
                             @endforeach
 
-                            <button class="button is-primary" type="submit">Submit</button>
+                            <button class="button is-primary" type="submit" id="sheetSubmitButton">Submit</button>
 
                         </form>
 
@@ -103,6 +103,8 @@ $(document).ready(function() {
             let url     = $(this).attr('action');
             let method     = $(this).attr('method');
 
+            $('#sheetSubmitButton').addClass('is-loading')
+
             $.ajax({
                 url,
                 data,
@@ -127,6 +129,10 @@ $(document).ready(function() {
                 success: function() {
                     $('#sheetForm').hide();
                     $('#sheetSubmitted').show();
+                },
+
+                complete: function() {
+                    $('#sheetSubmitButton').removeClass('is-loading')
                 }
             });
         })
