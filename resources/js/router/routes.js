@@ -1,6 +1,7 @@
 import Dashboard from '../view/dashboard/Index'
 import Form from '../view/form/Index'
 import ShowForm from '../view/form/ShowForm'
+import PublicForm from '../view/form/PublicForm'
 
 export const routes = [
 
@@ -37,6 +38,16 @@ export const routes = [
         component: ShowForm,
         meta: {
             title: 'Show Form'
+        }
+    },
+
+    {
+        path: '/:id',
+        name: 'PublicForm',
+        component: PublicForm,
+        meta: {
+            title: 'Public Form',
+            guess: true
         }
     },
 ];

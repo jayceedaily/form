@@ -19,7 +19,8 @@ use Illuminate\Support\Facades\Route;
 
 // Auth::routes();
 
-// Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/a/{form}', 'PublicFormController@show');
+Route::post('/a/{form}', 'PublicFormController@store');
 
 
 Route::get('/{any}', 'SpaController@index')->where('any', '.*');

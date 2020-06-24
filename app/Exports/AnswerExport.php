@@ -24,7 +24,9 @@ class AnswerExport implements FromArray,ShouldAutoSize
     {
         $sheets = Sheet::where('form_id', $this->form->id)->get();
 
-        $questions = Question::where('form_id', $this->form->id)->get();
+        $questions = Question::where('form_id', $this->form->id)->orderBy('order_number', 'ASC')->get();
+
+        // dd($questions);
 
         $rows = [];
 

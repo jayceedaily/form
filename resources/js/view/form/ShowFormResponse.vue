@@ -20,12 +20,15 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'ShowFormResponse',
     created: function() {
         this.loadSheetsForm();
+    },
+    computed: {
+        ...mapGetters({form:'form/selected'})
     },
     methods : {
         ...mapActions({ loadSheetsForm:'form/loadSheets',
@@ -33,7 +36,7 @@ export default {
 
         handleDownload: function() {
           axios({
-                    url: '/api/form/1/download',
+                    url: '/api/form/'+this.form.id+'/download',
                     method: 'GET',
                     responseType: 'blob',
                 }).then((response) => {

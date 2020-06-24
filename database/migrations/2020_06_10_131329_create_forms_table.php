@@ -22,6 +22,8 @@ class CreateFormsTable extends Migration
 
             $table->boolean('has_random_questions')->default(0);
 
+            $table->boolean('accept_answers')->default(0);
+
             $table->timestamps();
 
             $table->softDeletes();

@@ -24,12 +24,15 @@
                 <div class="column is-4">
                     <div class="select is-fullwidth">
                         <select name="" id="">
-                            <option value="multiple">Multiple choice</option>
-                            <option value="input">Input answer</option>
+                            <option value="radio">Multiple choice</option>
+                            <option value="checkbox">Checkbox</option>
+                            <option value="select">Dropdown</option>
+                            <option value="text">Textbox</option>
                         </select>
                     </div>
                 </div>
             </div>
+
             <div class="columns">
                 <div class="column">
                     <textarea class="textarea" name="" id="" cols="30" rows="1" v-model="question.description"></textarea>
