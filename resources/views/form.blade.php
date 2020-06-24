@@ -35,7 +35,7 @@
 
                                 <div class="mb-10">
 
-                                    <p><b>{{$question->content}}</b></p>
+                                    <p><b>{{$question->content}}{{$question->is_required ? '*' : ''}}</b></p>
 
 
                                         @switch($question->type)
