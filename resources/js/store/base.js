@@ -18,6 +18,7 @@ export const base = {
         filters: '',
         current_page: 1,
         last_page: 1,
+        next_page: 1,
         total: 0,
 
     },
@@ -123,7 +124,7 @@ export const base = {
                 }
             }
 
-            let response = await http.get(state.endpoint + '?' + state.filters);
+            let response = await http.get(state.endpoint + '?' + filters);
 
             if(response.status == 200) {
 
@@ -258,8 +259,6 @@ export const base = {
 
             return response;
         },
-
-
 
         select: ({commit}, data) => {
 
