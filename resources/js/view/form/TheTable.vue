@@ -36,14 +36,32 @@ export default {
             formTotalItem:'form/totalItem'
         }),
     },
+
+    mounted() {
+        let filters = this.getQueryString('form_filters');
+    },
+
     methods: {
 
         ...mapActions({
-            formLoad: 'form/load'
+            formLoad: 'form/load',
+            formSetFilter: 'form/setFilter',
         }),
 
         handlePageChange(page) {
-            this.formLoad("page="+page);
+
+            this.formSetFilter({page});
+
+            // this.formLoad();
+        },
+
+        getQueryString(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&')
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url)
+            if (!results) return null
+            if (!results[2]) return ''
+            return decodeURIComponent(results[2].replace(/\+/g, ' '))
         }
     }
 }

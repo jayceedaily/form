@@ -30,11 +30,19 @@ export default {
 
         }
     },
+
+
     created: function() {
-        this.loadForms()
+
+        let filters = this.$route.query;
+
+        this.formSetFilter(filters)
     },
     methods: {
-        ...mapActions({loadForms:'form/load'}),
+        ...mapActions({
+            loadForms:'form/load',
+            formSetFilter: 'form/setFilter'
+        }),
     }
 }
 </script>
