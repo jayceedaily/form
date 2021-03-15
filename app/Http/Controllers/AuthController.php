@@ -31,7 +31,7 @@ class AuthController extends Controller
     public function init(Request $request)
     {
         return array_merge($request->user()->toArray(), [
-            'version' => Git::getCurrentHash()
+            // 'version' => Git::getCurrentHash()
         ]);
     }
 
