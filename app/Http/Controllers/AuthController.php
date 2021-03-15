@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Git;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -29,7 +30,9 @@ class AuthController extends Controller
 
     public function init(Request $request)
     {
-        return $request->user();
+        return array_merge($request->user()->toArray(), [
+            'version' => Git::getCurrentHash()
+        ]);
     }
 
     public function logout(Request $request)
