@@ -7,6 +7,10 @@ use Faker\Generator as Faker;
 
 $factory->define(Form::class, function (Faker $faker) {
     return [
-        //
+        'name' => $faker->sentence(),
+        'description' => $faker->text(),
+        'has_random_questions' => $faker->boolean(),
+        'accept_answers' => $faker->boolean(),
+        'created_at' => $faker->dateTime(),
     ];
 });

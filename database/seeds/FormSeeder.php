@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Form;
 use Illuminate\Database\Seeder;
 
 class FormSeeder extends Seeder
@@ -11,6 +12,6 @@ class FormSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(Form::class, 1000)->create();
     }
 }
