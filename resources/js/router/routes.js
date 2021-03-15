@@ -2,6 +2,7 @@ import Dashboard from '../view/dashboard/Index'
 import Form from '../view/form/Index'
 import ShowForm from '../view/form/ShowForm'
 import PublicForm from '../view/form/PublicForm'
+import CreateForm from '../view/form/CreateForm'
 
 export const routes = [
 
@@ -24,6 +25,15 @@ export const routes = [
     },
 
     {
+        path: '/form/create',
+        name: 'CreateForm',
+        component: CreateForm,
+        meta: {
+            title: 'Create Form'
+        }
+    },
+
+    {
         path: '/form/:id',
         name: 'ShowForm',
         component: ShowForm,
@@ -31,6 +41,7 @@ export const routes = [
             title: 'Show Form'
         }
     },
+
 
     {
         path: '/form/:id/response',

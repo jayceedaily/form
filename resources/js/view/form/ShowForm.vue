@@ -123,7 +123,7 @@ export default {
         ...mapActions({showForm: 'form/show',
                         addQuestionForm:'form/addQuestion',
                         updateForm: 'form/update'
-                        }),
+        }),
 
         handleAddQuestion: function(value) {
 
