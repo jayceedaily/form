@@ -2,7 +2,9 @@
 <div class="container">
     <div class="columns">
         <div class="column">
-            <button class="button is-primary">Create form</button>
+            <!-- <button class="button is-primary">Create form</button> -->
+            <router-link href="#" class="button is-primary" to='form/create'>Create form</router-link>
+
         </div>
     </div>
 <div class="columns">
