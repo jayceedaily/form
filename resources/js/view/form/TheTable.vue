@@ -12,7 +12,12 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="100%"></td>
+                <td colspan="100%">
+                    <my-paginate :currentPage="formCurrentPage"
+                        :lastPage="formLastPage"
+                        :totalItem="formTotalItem"
+                        @pageChange="handlePageChange"/>
+                </td>
             </tr>
         </tfoot>
     </table>
@@ -20,11 +25,26 @@
 
 <script>
 import TheTableRow from './TheTableRow';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 export default {
     name: 'TheTable',
     computed:{
-        ...mapGetters({forms:'form/items'}),
+        ...mapGetters({
+            forms:'form/items',
+            formCurrentPage:'form/currentPage',
+            formLastPage:'form/lastPage',
+            formTotalItem:'form/totalItem'
+        }),
+    },
+    methods: {
+
+        ...mapActions({
+            formLoad: 'form/load'
+        }),
+
+        handlePageChange(page) {
+            this.formLoad("page="+page);
+        }
     }
 }
 </script>
