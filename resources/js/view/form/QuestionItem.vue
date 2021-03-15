@@ -3,7 +3,7 @@
         <div class="card-content">
             <div class="columns">
                 <div class="column">
-                    <span class="tag is-info">{{order === false ? 'Add question' : 'Question '+order}}</span>
+                    <span class="tag is-info">{{order}}</span>
                     <my-dropdown class="is-pulled-right" style="width:20px!important;" compact>
                         <template v-slot:trigger>
                             <span style="cursor:pointer"><i class="material-icons is-pulled-right">more_horiz</i></span>
