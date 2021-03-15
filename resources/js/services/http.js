@@ -1,8 +1,8 @@
 export const http = {
 
-	get: async (url, method = 'GET') =>
+	get: async (url, data = {}, method = 'GET') =>
 	{
-		return await request(url, method)
+		return await request(url, method, data)
 					.then(response =>
 					{
 						return response;

@@ -71,7 +71,6 @@ export const base = {
 
             }
 
-
             item.is_updated = true;
 
             let index = state.items.findIndex( list_item => list_item.id == item.id );
@@ -102,29 +101,9 @@ export const base = {
 
     actions: {
 
-        load: async ({commit, state, dispatch}, filters = false) => {
+        load: async ({commit, state, dispatch}, filters = {}) => {
 
-            if(state.is_first_load) {
-
-                state.is_first_load = false;
-
-                if(JSON.stringify(router.currentRoute.query) != '{}') {
-
-                    let filters = router.currentRoute.query;
-
-                    let string_filters = '';
-
-                    for (const [key, value] of Object.entries(filters)) {
-
-                        string_filters += key + '=' + value + '&'
-
-                    }
-
-                    return dispatch('setFilter', string_filters);
-                }
-            }
-
-            let response = await http.get(state.endpoint + '?' + filters);
+            let response = await http.get(state.endpoint, filters);
 
             if(response.status == 200) {
 
@@ -141,70 +120,21 @@ export const base = {
             return response;
         },
 
-        setFilter: async ({commit,state, dispatch}, filter) => {
-
-            let _parse_filter           = '';
-
-            let _existing_filters       = state.filters.split('&');
-
-            let _new_filter             = filter.split('=');
-
-            let _exist_then_changed     = false;
-
-            _existing_filters.forEach( _filter => {
-
-                if(_filter) {
-
-                    let tag =  _filter.split('=');
-
-                    if(tag[0] == _new_filter[0]) {
-
-                        _exist_then_changed = true;
-
-                        tag[1] = _new_filter[1];
-
-                    }
-
-                    _parse_filter += tag.join('=') + '&';
-                }
-
-            });
-
-            if(!_exist_then_changed) {
-
-                _parse_filter += filter + '&';
-            }
-
-            let _array_parse_filter = _parse_filter.split('&');
-
-            let json_filters = {};
-
-            _array_parse_filter.forEach( _filter => {
-
-
-                if(_filter) {
-
-                    let _tag = _filter.split('=');
-
-                    json_filters[_tag[0]] = _tag[1]
-
-                }
-            });
+        setFilter: async ({commit,state, dispatch}, filters) => {
 
             router.push({
                 ...router.currentRoute,
-                query: json_filters
-            });
+                query: filters
+            }).catch(()=>{});;
 
-            commit('setFilter', _parse_filter)
+            commit('setFilter', filters)
 
-            return await dispatch('load');
+            return dispatch('load', filters);
         },
 
         show: async({commit, state}, id) => {
 
             let response = await http.get(state.endpoint + '/' + id);
-
 
             if(response.status == 200) {
                 commit('select',  response.data);
