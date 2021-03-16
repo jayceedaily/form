@@ -9,6 +9,11 @@ export const router = new VueRouter({
     mode: 'history',
     routes,
     linkExactActiveClass: 'is-active',
+    beforeRouteUpdate (to, from, next) {
+        let PID = to.query.pid
+        console.log('here');
+        next()
+      }
 });
 
 

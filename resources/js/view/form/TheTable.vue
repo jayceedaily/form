@@ -2,8 +2,11 @@
     <table class="table is-fullwidth">
         <thead>
             <tr>
-                <th>Form Title</th>
+                <th>
+                    <a @click="handleTitleSort" class="has-text-grey-light">Name  <i v-if="sort[titleSort] != null" class="material-icons" style="vertical-align:middle">{{sort[titleSort] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
+                </th>
                 <th>Responses</th>
+                <th>Date Created</th>
                 <th></th>
             </tr>
         </thead>
@@ -16,6 +19,8 @@
                     <my-paginate :currentPage="formCurrentPage"
                         :lastPage="formLastPage"
                         :totalItem="formTotalItem"
+                        :from="formItemFrom"
+                        :to="formItemTo"
                         @pageChange="handlePageChange"/>
                 </td>
             </tr>
@@ -28,17 +33,33 @@ import TheTableRow from './TheTableRow';
 import { mapActions, mapGetters } from 'vuex';
 export default {
     name: 'TheTable',
+
+    data: function() {
+        return {
+            sort: [null, 'ASC', 'DESC'],
+
+            titleSort: 0,
+        }
+    },
+
     computed:{
         ...mapGetters({
             forms:'form/items',
             formCurrentPage:'form/currentPage',
             formLastPage:'form/lastPage',
-            formTotalItem:'form/totalItem'
+            formTotalItem:'form/totalItem',
+            formItemFrom: 'form/itemFrom',
+            formItemTo: 'form/itemTo',
+            formFilters: 'form/filters',
         }),
     },
 
-    mounted() {
-        let filters = this.getQueryString('form_filters');
+    watch: {
+        formFilters: {
+            handler(value) {
+                console.log('fitler change');
+            }
+        }
     },
 
     methods: {
@@ -49,19 +70,21 @@ export default {
         }),
 
         handlePageChange(page) {
+            let filters = this.formFilters;
 
-            this.formSetFilter({page});
+            filters.page = page
 
-            // this.formLoad();
+            this.formSetFilter(filters);
         },
 
-        getQueryString(name, url = window.location.href) {
-            name = name.replace(/[\[\]]/g, '\\$&')
-            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-                results = regex.exec(url)
-            if (!results) return null
-            if (!results[2]) return ''
-            return decodeURIComponent(results[2].replace(/\+/g, ' '))
+        handleTitleSort() {
+            if(this.titleSort == 2) {
+                this.titleSort = 0;
+            } else {
+                this.titleSort = this.titleSort+1;
+            }
+
+            this.formSetFilter({ "sort[name]": this.sort[this.titleSort]} );
         }
     }
 }

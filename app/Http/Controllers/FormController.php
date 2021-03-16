@@ -18,9 +18,17 @@ class FormController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response(Form::withCount('sheets')->latest()->paginate());
+        $query = Form::withCount('sheets');
+
+        if(isset($request->sort['name'])) {
+            $query->orderBy('name', $request->sort['name']);
+        } else {
+            $query->orderBy('created_at', 'DESC');
+        }
+
+        return response($query->paginate());
     }
 
     /**

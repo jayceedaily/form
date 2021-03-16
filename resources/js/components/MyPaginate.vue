@@ -1,13 +1,26 @@
 <template >
-    <nav  v-if="lastPage != 1" class="pagination is-centered" role="navigation" aria-label="pagination">
-        <a v-if="hasPrevPage" class="pagination-previous" @click="changePage(currentPage-1)">Previous</a>
-        <a v-if="hasNextPage" class="pagination-next" @click="changePage(currentPage+1)">Next page</a>
-        <ul class="pagination-list">
-            <li v-for="(page, index) in pages" :key=index>
-                <a class="pagination-link" aria-label="Goto page 1" :class="page.isCurrent ? 'is-current disabled' : ''" @click="changePage(page.number)">{{page.number}}</a>
-            </li>
-        </ul>
-    </nav>
+<div class="columns is-vcentered">
+    <div class="column">
+        <p class="has-text-grey">{{from}} - {{to}} of {{totalItem}}</p>
+    </div>
+    <div class="column">
+
+        <nav  v-if="lastPage != 1" class="pagination is-pulled-right mb-0" role="navigation" aria-label="pagination">
+            <ul class="pagination-list">
+                <li>
+                    <a v-if="hasPrevPage" class="pagination-previous" @click="changePage(currentPage-1)"><i class="material-icons">navigate_before</i></a>
+                </li>
+                <li v-for="(page, index) in pages" :key=index>
+                    <a class="pagination-link" aria-label="Goto page 1" :class="page.isCurrent ? 'is-current disabled' : ''" @click="changePage(page.number)">{{page.number}}</a>
+                </li>
+
+                <li>
+                    <a v-if="hasNextPage" class="pagination-next" @click="changePage(currentPage+1)"><i class="material-icons">navigate_next</i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
 
 </template>
 
@@ -31,6 +44,18 @@ export default {
             type: Number,
             required: true,
             default: 1
+        },
+
+        from: {
+            type: Number,
+            required: false,
+            default: 0,
+        },
+
+        to: {
+            type: Number,
+            required: false,
+            default: 0,
         }
     },
 
@@ -87,8 +112,6 @@ export default {
         }
 
     },
-
-
 }
 </script>
 

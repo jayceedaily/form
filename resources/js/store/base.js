@@ -20,6 +20,8 @@ export const base = {
         last_page: 1,
         next_page: 1,
         total: 0,
+        item_from: 0,
+        item_to: 0,
 
     },
 
@@ -51,6 +53,18 @@ export const base = {
         setTotal: (state, value) => {
 
             state.total = value;
+
+        },
+
+        setItemFrom: (state, value) => {
+
+            state.item_from = value;
+
+        },
+
+        setItemTo: (state, value) => {
+
+            state.item_to = value;
 
         },
 
@@ -115,6 +129,10 @@ export const base = {
 
                 commit('setTotal', response.data.total);
 
+                commit('setItemFrom', response.data.from);
+
+                commit('setItemTo', response.data.to);
+
             }
 
             return response;
@@ -125,11 +143,12 @@ export const base = {
             router.push({
                 ...router.currentRoute,
                 query: filters
-            }).catch(()=>{});;
+            }).catch(()=>{});
+
+            console.log(filters);
 
             commit('setFilter', filters)
 
-            return dispatch('load', filters);
         },
 
         show: async({commit, state}, id) => {
@@ -246,12 +265,25 @@ export const base = {
             return state.total;
         },
 
+        itemFrom: (state) => {
+            return state.item_from;
+        },
+
+        itemTo: (state) => {
+            return state.item_to;
+        },
+
+
         currentPage: (state) => {
             return state.current_page;
         },
 
         lastPage: (state) => {
             return state.last_page;
+        },
+
+        filters: (state) => {
+            return  Object.assign({}, state.filters);
         },
     }
 }
