@@ -1368,7 +1368,7 @@ pre {
 
 body {
   color: #4a4a4a;
-  font-size: 0.9em;
+  font-size: 1em;
   font-weight: 400;
   line-height: 1.5;
 }
@@ -3935,7 +3935,7 @@ div.icon-text {
 .table th {
   border: 1px solid #dbdbdb;
   border-width: 0 0 1px;
-  padding: 1.5em 3em;
+  padding: 1em 1.5em;
   vertical-align: top;
 }
 
@@ -4064,7 +4064,7 @@ div.icon-text {
 .table thead td,
 .table thead th {
   border-width: 0 0 2px;
-  color: #363636;
+  color: #7a7a7a;
 }
 
 .table tfoot {

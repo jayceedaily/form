@@ -1,8 +1,15 @@
 <template>
     <tr>
-        <td>{{form.name}}</td>
+        <td><p class="has-text-weight-bold">{{form.name}}</p></td>
         <td>{{form.sheets_count}}</td>
-        <td>{{moments(form.created_at).fromNow()}}</td>
+        <td>
+            <div class="columns">
+                <div class="column">
+                    <p>{{moments(form.created_at).format('LT LL')}}</p>
+                    <p class="is-size-7 has-text-grey-light">{{moments(form.created_at).fromNow()}}</p>
+                </div>
+            </div>
+        </td>
         <td>
             <div class="columns is-pulled-right">
                 <div class="column">

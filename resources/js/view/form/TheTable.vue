@@ -3,10 +3,12 @@
         <thead>
             <tr>
                 <th>
-                    <a @click="handleTitleSort" class="has-text-grey-light">Name  <i v-if="sort[titleSort] != null" class="material-icons" style="vertical-align:middle">{{sort[titleSort] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
+                    <a @click="handleSort('name')" class="has-text-grey-light">Name  <i v-if="sort[sortables.name] != null" class="material-icons" style="vertical-align:middle">{{sort[sortables.name] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
                 </th>
-                <th>Responses</th>
-                <th>Date Created</th>
+                <th class="has-text-grey-light">Responses</th>
+                <th>
+                    <a @click="handleSort('created_at')" class="has-text-grey-light">Date Created  <i v-if="sort[sortables.created_at] != null" class="material-icons" style="vertical-align:middle">{{sort[sortables.created_at] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -21,7 +23,10 @@
                         :totalItem="formTotalItem"
                         :from="formItemFrom"
                         :to="formItemTo"
-                        @pageChange="handlePageChange"/>
+                        @pageChange="handlePageChange"
+                        @limitChange="handleLimitChange"
+
+                        />
                 </td>
             </tr>
         </tfoot>
@@ -38,7 +43,10 @@ export default {
         return {
             sort: [null, 'ASC', 'DESC'],
 
-            titleSort: 0,
+            sortables: {
+                name: 0,
+                created_at: 0,
+            }
         }
     },
 
@@ -77,14 +85,35 @@ export default {
             this.formSetFilter(filters);
         },
 
-        handleTitleSort() {
-            if(this.titleSort == 2) {
-                this.titleSort = 0;
+        handleLimitChange(limit) {
+            let filters = this.formFilters;
+
+            filters.limit = limit
+
+            this.formSetFilter(filters);
+        },
+
+        handleSort(sortVariable) {
+
+
+            // reset values
+            Object.keys(this.sortables).forEach((key, value) => {
+                if(key != sortVariable) {
+                    this.sortables[key] = 0
+                }
+            })
+
+            if(this.sortables[sortVariable] == 2) {
+                this.sortables[sortVariable] = 0;
             } else {
-                this.titleSort = this.titleSort+1;
+                this.sortables[sortVariable] = this.sortables[sortVariable] + 1;
             }
 
-            this.formSetFilter({ "sort[name]": this.sort[this.titleSort]} );
+            let _sort = {};
+
+            _sort["sort["+ sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
+
+            this.formSetFilter(_sort);
         }
     }
 }

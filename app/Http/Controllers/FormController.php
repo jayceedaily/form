@@ -22,13 +22,16 @@ class FormController extends Controller
     {
         $query = Form::withCount('sheets');
 
-        if(isset($request->sort['name'])) {
-            $query->orderBy('name', $request->sort['name']);
+        if($request->sort) {
+            foreach ($request->sort as $field => $value) {
+                $query->orderBy($field, $value);
+            }
         } else {
             $query->orderBy('created_at', 'DESC');
         }
 
-        return response($query->paginate());
+
+        return response($query->paginate($request->limit));
     }
 
     /**

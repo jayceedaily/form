@@ -1,7 +1,17 @@
 <template >
 <div class="columns is-vcentered">
     <div class="column">
+
         <p class="has-text-grey">{{from}} - {{to}} of {{totalItem}}</p>
+        <p>
+            <div class="select">
+                <select v-model="limitx">
+                    <option value="15">15</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+        </p>
     </div>
     <div class="column">
 
@@ -56,6 +66,18 @@ export default {
             type: Number,
             required: false,
             default: 0,
+        },
+
+        limit: {
+            type: Number,
+            required: false,
+            default: 15
+        }
+    },
+
+    data: function() {
+        return {
+            limitx: 50
         }
     },
 
@@ -100,6 +122,15 @@ export default {
         }
     },
 
+    watch: {
+        limitx: function(limit) {
+            if(limit != this.limit) {
+
+                this.$emit('limitChange', limit);
+            }
+        }
+    },
+
     methods: {
 
         changePage: function(page) {
@@ -108,7 +139,14 @@ export default {
 
                 this.$emit('pageChange', page);
             }
+        },
 
+        changeLimit: function(limit) {
+            console.log(limit)
+            if(limit != this.limit) {
+
+                this.$emit('limitChange', limit);
+            }
         }
 
     },
