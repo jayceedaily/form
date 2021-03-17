@@ -22,6 +22,7 @@ export const base = {
         total: 0,
         item_from: 0,
         item_to: 0,
+        per_page: 0,
 
     },
 
@@ -65,6 +66,12 @@ export const base = {
         setItemTo: (state, value) => {
 
             state.item_to = value;
+
+        },
+
+        setPerPage: (state, value) => {
+
+            state.per_page = value;
 
         },
 
@@ -132,6 +139,8 @@ export const base = {
                 commit('setItemFrom', response.data.from);
 
                 commit('setItemTo', response.data.to);
+
+                commit('setPerPage', response.data.per_page);
 
             }
 
@@ -210,9 +219,7 @@ export const base = {
         },
 
         select: ({commit}, data) => {
-
-            commit('select',data);
-
+            commit('select', data);
         },
 
         deselect: ({commit}) => {
@@ -234,10 +241,7 @@ export const base = {
             }
 
             return response;
-
         },
-
-
     },
 
     getters: {
@@ -273,7 +277,6 @@ export const base = {
             return state.item_to;
         },
 
-
         currentPage: (state) => {
             return state.current_page;
         },
@@ -284,6 +287,10 @@ export const base = {
 
         filters: (state) => {
             return  Object.assign({}, state.filters);
+        },
+
+        perPage: (state) => {
+            return Number(state.per_page);
         },
     }
 }

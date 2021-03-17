@@ -23,6 +23,7 @@
                         :totalItem="formTotalItem"
                         :from="formItemFrom"
                         :to="formItemTo"
+                        :limit="formPerPage"
                         @pageChange="handlePageChange"
                         @limitChange="handleLimitChange"
 
@@ -59,6 +60,7 @@ export default {
             formItemFrom: 'form/itemFrom',
             formItemTo: 'form/itemTo',
             formFilters: 'form/filters',
+            formPerPage: 'form/perPage',
         }),
     },
 
@@ -86,15 +88,11 @@ export default {
         },
 
         handleLimitChange(limit) {
-            let filters = this.formFilters;
 
-            filters.limit = limit
-
-            this.formSetFilter(filters);
+            this.formSetFilter({limit});
         },
 
         handleSort(sortVariable) {
-
 
             // reset values
             Object.keys(this.sortables).forEach((key, value) => {

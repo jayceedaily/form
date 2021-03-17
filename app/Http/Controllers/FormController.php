@@ -20,7 +20,7 @@ class FormController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Form::withCount('sheets');
+        $query = Form::withCount('sheets')->toBase();
 
         if($request->sort) {
             foreach ($request->sort as $field => $value) {

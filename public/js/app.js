@@ -2238,11 +2238,6 @@ __webpack_require__.r(__webpack_exports__);
       "default": 15
     }
   },
-  data: function data() {
-    return {
-      limitx: 50
-    };
-  },
   computed: {
     pages: function pages() {
       var pages = [];
@@ -2270,24 +2265,15 @@ __webpack_require__.r(__webpack_exports__);
       return this.currentPage != 1;
     }
   },
-  watch: {
-    limitx: function limitx(limit) {
-      if (limit != this.limit) {
-        this.$emit('limitChange', limit);
-      }
-    }
-  },
   methods: {
     changePage: function changePage(page) {
       if (page != this.currentPage) {
         this.$emit('pageChange', page);
       }
     },
-    changeLimit: function changeLimit(limit) {
-      console.log(limit);
-
-      if (limit != this.limit) {
-        this.$emit('limitChange', limit);
+    handleLimitChange: function handleLimitChange(limit) {
+      if (limit.target.value != this.limit) {
+        this.$emit('limitChange', limit.target.value);
       }
     }
   }
@@ -3350,6 +3336,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3370,7 +3357,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     formTotalItem: 'form/totalItem',
     formItemFrom: 'form/itemFrom',
     formItemTo: 'form/itemTo',
-    formFilters: 'form/filters'
+    formFilters: 'form/filters',
+    formPerPage: 'form/perPage'
   })),
   watch: {
     formFilters: {
@@ -3389,9 +3377,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.formSetFilter(filters);
     },
     handleLimitChange: function handleLimitChange(limit) {
-      var filters = this.formFilters;
-      filters.limit = limit;
-      this.formSetFilter(filters);
+      this.formSetFilter({
+        limit: limit
+      });
     },
     handleSort: function handleSort(sortVariable) {
       var _this = this;
@@ -28466,27 +28454,10 @@ var render = function() {
         _c(
           "select",
           {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.limitx,
-                expression: "limitx"
-              }
-            ],
+            domProps: { value: _vm.limit },
             on: {
               change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.limitx = $event.target.multiple
-                  ? $$selectedVal
-                  : $$selectedVal[0]
+                return _vm.handleLimitChange($event)
               }
             }
           },
@@ -30001,7 +29972,8 @@ var render = function() {
                 lastPage: _vm.formLastPage,
                 totalItem: _vm.formTotalItem,
                 from: _vm.formItemFrom,
-                to: _vm.formItemTo
+                to: _vm.formItemTo,
+                limit: _vm.formPerPage
               },
               on: {
                 pageChange: _vm.handlePageChange,
@@ -48701,7 +48673,8 @@ var base = {
     next_page: 1,
     total: 0,
     item_from: 0,
-    item_to: 0
+    item_to: 0,
+    per_page: 0
   },
   mutations: {
     load: function load(state, items) {
@@ -48724,6 +48697,9 @@ var base = {
     },
     setItemTo: function setItemTo(state, value) {
       state.item_to = value;
+    },
+    setPerPage: function setPerPage(state, value) {
+      state.per_page = value;
     },
     select: function select(state, item) {
       state.selected = item;
@@ -48787,6 +48763,7 @@ var base = {
                   commit('setTotal', response.data.total);
                   commit('setItemFrom', response.data.from);
                   commit('setItemTo', response.data.to);
+                  commit('setPerPage', response.data.per_page);
                 }
 
                 return _context.abrupt("return", response);
@@ -49052,6 +49029,9 @@ var base = {
     },
     filters: function filters(state) {
       return Object.assign({}, state.filters);
+    },
+    perPage: function perPage(state) {
+      return Number(state.per_page);
     }
   }
 };

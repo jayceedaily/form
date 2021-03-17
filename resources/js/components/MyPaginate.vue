@@ -5,7 +5,7 @@
         <p class="has-text-grey">{{from}} - {{to}} of {{totalItem}}</p>
         <p>
             <div class="select">
-                <select v-model="limitx">
+                <select :value="limit" v-on:change="handleLimitChange($event)">
                     <option value="15">15</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
@@ -74,13 +74,6 @@ export default {
             default: 15
         }
     },
-
-    data: function() {
-        return {
-            limitx: 50
-        }
-    },
-
     computed: {
 
         pages: function() {
@@ -121,16 +114,6 @@ export default {
             return this.currentPage != 1;
         }
     },
-
-    watch: {
-        limitx: function(limit) {
-            if(limit != this.limit) {
-
-                this.$emit('limitChange', limit);
-            }
-        }
-    },
-
     methods: {
 
         changePage: function(page) {
@@ -141,11 +124,9 @@ export default {
             }
         },
 
-        changeLimit: function(limit) {
-            console.log(limit)
-            if(limit != this.limit) {
-
-                this.$emit('limitChange', limit);
+        handleLimitChange: function(limit) {
+            if(limit.target.value != this.limit) {
+                this.$emit('limitChange', limit.target.value);
             }
         }
 
