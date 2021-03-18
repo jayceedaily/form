@@ -154,10 +154,7 @@ export const base = {
                 query: filters
             }).catch(()=>{});
 
-            console.log(filters);
-
             commit('setFilter', filters)
-
         },
 
         show: async({commit, state}, id) => {

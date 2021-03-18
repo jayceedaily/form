@@ -1,7 +1,9 @@
 <template>
     <div class="modal" :class="open ? 'is-active' : ''">
     <div class="modal-background"></div>
-    <slot></slot>
+    <div class="modal-content">
+        <slot></slot>
+    </div>
     <button class="modal-close is-large" aria-label="close" @click="handleCloseModal"></button>
     </div>
 </template>

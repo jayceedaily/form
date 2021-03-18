@@ -1,5 +1,5 @@
 <template>
-    <table class="table is-fullwidth">
+    <table class="table is-fullwidth is-hoverable">
         <thead>
             <tr>
                 <th>
@@ -26,7 +26,6 @@
                         :limit="formPerPage"
                         @pageChange="handlePageChange"
                         @limitChange="handleLimitChange"
-
                         />
                 </td>
             </tr>

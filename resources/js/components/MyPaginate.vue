@@ -2,7 +2,7 @@
 <div class="columns is-vcentered">
     <div class="column">
 
-        <p class="has-text-grey">{{from}} - {{to}} of {{totalItem}}</p>
+        <p class="has-text-grey">{{from.toLocaleString()}} - {{to.toLocaleString()}} of {{totalItem.toLocaleString()}}</p>
         <p>
             <div class="select">
                 <select :value="limit" v-on:change="handleLimitChange($event)">
