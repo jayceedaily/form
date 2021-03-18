@@ -31,7 +31,7 @@ class FormController extends Controller
         }
 
 
-        return response($query->paginate($request->limit));
+        return response($query->paginate($request->limit ?? 15));
     }
 
     /**
