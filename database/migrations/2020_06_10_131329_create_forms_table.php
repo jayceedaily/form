@@ -24,6 +24,12 @@ class CreateFormsTable extends Migration
 
             $table->boolean('accept_answers')->default(0);
 
+            $table->foreignId('created_by');
+
+            $table->foreign('created_by')
+            ->on('users')
+            ->references('id');
+
             $table->timestamps();
 
             $table->softDeletes();
