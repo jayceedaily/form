@@ -20,7 +20,7 @@ class FormController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Form::withCount('sheets')->toBase();
+        $query = Form::with('author')->withCount('sheets');
 
         if($request->sort) {
             foreach ($request->sort as $field => $value) {
@@ -29,7 +29,6 @@ class FormController extends Controller
         } else {
             $query->orderBy('created_at', 'DESC');
         }
-
 
         return response($query->paginate($request->limit ?? 15));
     }

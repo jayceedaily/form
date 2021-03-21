@@ -2,6 +2,12 @@
     <tr>
         <td><p class="has-text-weight-bold">{{form.name}}</p></td>
         <td>{{form.sheets_count}}</td>
+        <td> <div class="columns">
+                <div class="column">
+                    <p>{{form.author.name}}</p>
+                    <p class="is-size-7 has-text-grey-light">{{form.author.email}}</p>
+                </div>
+            </div></td>
         <td>
             <div class="columns">
                 <div class="column">
@@ -25,7 +31,6 @@
                                 <router-link href="#" class="dropdown-item" :to="'form/' + form.id">View</router-link>
                                 <a class="dropdown-item">Delete</a>
                         </template>
-
                     </my-dropdown>
                 </div>
             </div>

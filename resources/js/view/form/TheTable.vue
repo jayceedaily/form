@@ -7,6 +7,9 @@
                 </th>
                 <th class="has-text-grey-light">Responses</th>
                 <th>
+                    <a @click="handleSort('created_at')" class="has-text-grey-light">Author  <i v-if="sort[sortables.created_at] != null" class="material-icons" style="vertical-align:middle">{{sort[sortables.created_at] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
+                </th>
+                <th>
                     <a @click="handleSort('created_at')" class="has-text-grey-light">Date Created  <i v-if="sort[sortables.created_at] != null" class="material-icons" style="vertical-align:middle">{{sort[sortables.created_at] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
                 </th>
                 <th></th>
