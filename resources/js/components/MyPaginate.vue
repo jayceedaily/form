@@ -1,18 +1,22 @@
 <template >
 <div class="columns is-vcentered">
+    <div class="column is-1">
+        <div class="select">
+            <select :value="limit" v-on:change="handleLimitChange($event)">
+                <option value="15">15</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+    </div>
     <div class="column">
 
-        <p class="has-text-grey">{{from.toLocaleString()}} - {{to.toLocaleString()}} of {{totalItem.toLocaleString()}}</p>
-        <p>
-            <div class="select">
-                <select :value="limit" v-on:change="handleLimitChange($event)">
-                    <option value="15">15</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-            </div>
-        </p>
+        <span class="has-text-grey">{{from.toLocaleString()}} - {{to.toLocaleString()}} of {{totalItem.toLocaleString()}}</span>
+
+
+
     </div>
+
     <div class="column">
 
         <nav  v-if="lastPage != 1" class="pagination is-pulled-right mb-0" role="navigation" aria-label="pagination">
@@ -23,7 +27,6 @@
                 <li v-for="(page, index) in pages" :key=index>
                     <a class="pagination-link" aria-label="Goto page 1" :class="page.isCurrent ? 'is-current disabled' : ''" @click="changePage(page.number)">{{page.number}}</a>
                 </li>
-
                 <li>
                     <a v-if="hasNextPage" class="pagination-next" @click="changePage(currentPage+1)"><i class="material-icons">navigate_next</i></a>
                 </li>
