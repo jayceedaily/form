@@ -1958,6 +1958,227 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyAutocomplete.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MyAutocomplete.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'MyAutoComplete',
+  props: {
+    endpoint: {
+      required: true,
+      type: String
+    },
+    items: {
+      required: false,
+      type: Array
+    },
+    label: {
+      required: false,
+      type: String,
+      "default": ''
+    },
+    value: {
+      required: false,
+      type: Number
+    },
+    placeholder: {
+      required: false,
+      type: String
+    },
+    allowCreate: {
+      required: false,
+      type: Boolean,
+      "default": false
+    },
+    keyValue: {
+      required: false,
+      type: Array,
+      "default": function _default() {
+        return ['name'];
+      }
+    }
+  },
+  data: function data() {
+    return {
+      showOptions: false,
+      isSearching: false,
+      isSaving: false,
+      textValue: '',
+      localItems: []
+    };
+  },
+  computed: {
+    listeners: function listeners() {
+      var _this = this;
+
+      return _objectSpread(_objectSpread({}, this.$listeners), {}, {
+        input: function input(event) {
+          return _this.$emit('input', event.target.value);
+        }
+      });
+    }
+  },
+  created: function created() {
+    var _this2 = this;
+
+    this.localItems = this.items;
+
+    if (this.value != null) {
+      var _value = this.localItems.find(function (item) {
+        return item.id == _this2.value;
+      });
+
+      var _texValue = '';
+      this.keyValue.forEach(function (value) {
+        _texValue += _value[value] + ' ';
+      });
+      this.textValue = _texValue;
+    }
+  },
+  watch: {
+    showOptions: function showOptions(value) {
+      if (value) {
+        this.loadItems();
+      }
+    }
+  },
+  methods: {
+    handleSelect: function handleSelect(data) {
+      if (data) {
+        var _texValue = '';
+        this.keyValue.forEach(function (value) {
+          _texValue += data[value] + ' ';
+        });
+        this.textValue = _texValue;
+        this.$emit('input', data.id);
+      } else {
+        this.textValue = this.placeholder;
+        this.$emit('input', null);
+      }
+
+      this.showOptions = false;
+    },
+    handleSave: function handleSave(data) {
+      var _this3 = this;
+
+      this.isSaving = true;
+      http.store(this.endpoint, {
+        name: this.textValue
+      }).then(function (response) {
+        if (response.status == 201) {
+          _this3.handleSelect(response.data);
+
+          _this3.localItems.unshift(response.data);
+        }
+
+        _this3.isSaving = false;
+      });
+    },
+    loadItems: function loadItems() {
+      var _this4 = this;
+
+      this.isSearching = true;
+      http.get(this.endpoint).then(function (response) {
+        _this4.localItems = response.data.data;
+        _this4.isSearching = false;
+      });
+    },
+    searchItems: function searchItems() {
+      var _this5 = this;
+
+      this.isSearching = true;
+      http.get(this.endpoint + '?search=' + this.textValue).then(function (response) {
+        _this5.isSearching = false;
+        _this5.localItems = response.data.data;
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyButton.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MyButton.vue?vue&type=script&lang=js& ***!
@@ -2170,6 +2391,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -2632,6 +2856,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -3368,6 +3593,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3483,6 +3711,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TheTableRow',
@@ -3557,6 +3790,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     leftText: 'nav/leftText'
   }))
 });
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\nli.my-autocomplete-item {\n    margin-bottom: 5px;\n    cursor: pointer;\n    padding: 10px;\n}\nli.my-autocomplete-item:hover {\n    background-color: #e2e2e2;\n}\n\n\n", ""]);
+
+// exports
+
 
 /***/ }),
 
@@ -27601,6 +27853,36 @@ try {
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./MyAutocomplete.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/view/App.vue?vue&type=style&index=0&lang=css&":
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/view/App.vue?vue&type=style&index=0&lang=css& ***!
@@ -28245,6 +28527,244 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyAutocomplete.vue?vue&type=template&id=0990be42&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MyAutocomplete.vue?vue&type=template&id=0990be42& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "field",
+      attrs: { tabindex: "1" },
+      on: {
+        blur: function($event) {
+          _vm.showOptions = false
+        }
+      }
+    },
+    [
+      _c("p", [
+        _c("label", { attrs: { for: "" } }, [_vm._v(_vm._s(_vm.label))])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "field", staticStyle: { "margin-bottom": "2px" } },
+        [
+          _c("p", [_c("label", [_vm._v(_vm._s(_vm.label))])]),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "control",
+              class: _vm.isSearching ? "is-loading" : ""
+            },
+            [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.textValue,
+                    expression: "textValue"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "input", placeholder: _vm.placeholder },
+                domProps: { value: _vm.textValue },
+                on: {
+                  keypress: _vm.searchItems,
+                  focus: function($event) {
+                    _vm.showOptions = true
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.textValue = $event.target.value
+                  }
+                }
+              })
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _vm.showOptions
+        ? _c(
+            "div",
+            { staticClass: "columns", staticStyle: { height: "20%" } },
+            [
+              _c("div", { staticClass: "column" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "columns",
+                    staticStyle: {
+                      position: "absolute",
+                      "z-index": "9999 !important"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "column" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "card",
+                          staticStyle: {
+                            "overflow-y": "auto",
+                            "max-height": "300px",
+                            width: "100%"
+                          },
+                          attrs: { tabindex: "1" }
+                        },
+                        [
+                          _c("div", {}, [
+                            _vm.isSearching
+                              ? _c("ul", [
+                                  _c(
+                                    "li",
+                                    { staticClass: "my-autocomplete-item" },
+                                    [_vm._v("Searching")]
+                                  )
+                                ])
+                              : _vm.localItems.length > 0
+                              ? _c(
+                                  "ul",
+                                  [
+                                    _c(
+                                      "li",
+                                      {
+                                        staticClass: "my-autocomplete-item",
+                                        attrs: { tabindex: "0" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.handleSelect(false)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v(_vm._s(_vm.placeholder))]
+                                    ),
+                                    _vm._v(" "),
+                                    _vm._l(_vm.localItems, function(item) {
+                                      return _c(
+                                        "li",
+                                        {
+                                          key: item.id,
+                                          staticClass: "my-autocomplete-item",
+                                          attrs: { tabindex: "0", item: item },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.handleSelect(item)
+                                            }
+                                          }
+                                        },
+                                        _vm._l(_vm.keyValue, function(
+                                          value,
+                                          index
+                                        ) {
+                                          return _c("span", { key: index }, [
+                                            _vm._v(_vm._s(item[value]) + " ")
+                                          ])
+                                        }),
+                                        0
+                                      )
+                                    })
+                                  ],
+                                  2
+                                )
+                              : _c("ul", [
+                                  _c("div", { staticClass: "notification" }, [
+                                    _c("button", {
+                                      staticClass: "delete",
+                                      attrs: { href: "" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.showOptions = false
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("li", [
+                                      _vm._m(0),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "columns" }, [
+                                        _c("div", { staticClass: "column" }, [
+                                          _vm._v(
+                                            "\n                                                Create "
+                                          ),
+                                          _c("b", [
+                                            _vm._v(_vm._s(_vm.textValue))
+                                          ]),
+                                          _vm._v(
+                                            "?\n                                            "
+                                          )
+                                        ])
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "columns" }, [
+                                        _c("div", { staticClass: "column" }, [
+                                          _c(
+                                            "a",
+                                            {
+                                              staticClass:
+                                                "button is-fullwidth is-success",
+                                              class: _vm.isSaving
+                                                ? "is-loading"
+                                                : "",
+                                              on: { click: _vm.handleSave }
+                                            },
+                                            [_vm._v("Save")]
+                                          )
+                                        ])
+                                      ])
+                                    ])
+                                  ])
+                                ])
+                          ])
+                        ]
+                      )
+                    ])
+                  ]
+                )
+              ])
+            ]
+          )
+        : _vm._e()
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "columns" }, [
+      _c("div", { staticClass: "column" }, [
+        _vm._v(
+          "\n                                                No result found\n                                            "
+        )
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyButton.vue?vue&type=template&id=4d1c1669&":
 /*!***********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MyButton.vue?vue&type=template&id=4d1c1669& ***!
@@ -28468,18 +28988,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "columns is-vcentered" }, [
-    _c("div", { staticClass: "column" }, [
-      _c("p", { staticClass: "has-text-grey" }, [
-        _vm._v(
-          _vm._s(_vm.from.toLocaleString()) +
-            " - " +
-            _vm._s(_vm.to.toLocaleString()) +
-            " of " +
-            _vm._s(_vm.totalItem.toLocaleString())
-        )
-      ]),
-      _vm._v(" "),
-      _c("p"),
+    _c("div", { staticClass: "column is-1" }, [
       _c("div", { staticClass: "select" }, [
         _c(
           "select",
@@ -28499,9 +29008,19 @@ var render = function() {
             _c("option", { attrs: { value: "100" } }, [_vm._v("100")])
           ]
         )
-      ]),
-      _vm._v(" "),
-      _c("p")
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "column" }, [
+      _c("span", { staticClass: "has-text-grey" }, [
+        _vm._v(
+          _vm._s(_vm.from.toLocaleString()) +
+            " - " +
+            _vm._s(_vm.to.toLocaleString()) +
+            " of " +
+            _vm._s(_vm.totalItem.toLocaleString())
+        )
+      ])
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "column" }, [
@@ -28979,9 +29498,16 @@ var render = function() {
       }
     },
     [
-      _c("div", { staticClass: "card pa-10" }, [
-        _c("p", [_vm._v("create filter fields")])
-      ])
+      _c(
+        "div",
+        { staticClass: "card pa-100" },
+        [
+          _c("p", [_vm._v("create filter fields")]),
+          _vm._v(" "),
+          _c("my-autocomplete")
+        ],
+        1
+      )
     ]
   )
 }
@@ -30026,6 +30552,41 @@ var render = function() {
               }
             },
             [
+              _vm._v("Author  "),
+              _vm.sort[_vm.sortables.created_at] != null
+                ? _c(
+                    "i",
+                    {
+                      staticClass: "material-icons",
+                      staticStyle: { "vertical-align": "middle" }
+                    },
+                    [
+                      _vm._v(
+                        _vm._s(
+                          _vm.sort[_vm.sortables.created_at] == "ASC"
+                            ? "keyboard_arrow_up"
+                            : "keyboard_arrow_down"
+                        )
+                      )
+                    ]
+                  )
+                : _vm._e()
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("th", [
+          _c(
+            "a",
+            {
+              staticClass: "has-text-grey-light",
+              on: {
+                click: function($event) {
+                  return _vm.handleSort("created_at")
+                }
+              }
+            },
+            [
               _vm._v("Date Created  "),
               _vm.sort[_vm.sortables.created_at] != null
                 ? _c(
@@ -30118,6 +30679,18 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("td", [_vm._v(_vm._s(_vm.form.sheets_count))]),
+    _vm._v(" "),
+    _c("td", [
+      _c("div", { staticClass: "columns" }, [
+        _c("div", { staticClass: "column" }, [
+          _c("p", [_vm._v(_vm._s(_vm.form.author.name))]),
+          _vm._v(" "),
+          _c("p", { staticClass: "is-size-7 has-text-grey-light" }, [
+            _vm._v(_vm._s(_vm.form.author.email))
+          ])
+        ])
+      ])
+    ]),
     _vm._v(" "),
     _c("td", [
       _c("div", { staticClass: "columns" }, [
@@ -47451,6 +48024,7 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
+	"./components/MyAutocomplete.vue": "./resources/js/components/MyAutocomplete.vue",
 	"./components/MyButton.vue": "./resources/js/components/MyButton.vue",
 	"./components/MyDropdown.vue": "./resources/js/components/MyDropdown.vue",
 	"./components/MyInput.vue": "./resources/js/components/MyInput.vue",
@@ -47544,6 +48118,93 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   store: _store__WEBPACK_IMPORTED_MODULE_4__["store"],
   router: _router__WEBPACK_IMPORTED_MODULE_3__["router"]
 });
+
+/***/ }),
+
+/***/ "./resources/js/components/MyAutocomplete.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/components/MyAutocomplete.vue ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MyAutocomplete_vue_vue_type_template_id_0990be42___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MyAutocomplete.vue?vue&type=template&id=0990be42& */ "./resources/js/components/MyAutocomplete.vue?vue&type=template&id=0990be42&");
+/* harmony import */ var _MyAutocomplete_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MyAutocomplete.vue?vue&type=script&lang=js& */ "./resources/js/components/MyAutocomplete.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _MyAutocomplete_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MyAutocomplete.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _MyAutocomplete_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MyAutocomplete_vue_vue_type_template_id_0990be42___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MyAutocomplete_vue_vue_type_template_id_0990be42___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/MyAutocomplete.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/MyAutocomplete.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/MyAutocomplete.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./MyAutocomplete.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyAutocomplete.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./MyAutocomplete.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyAutocomplete.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
+
+/***/ }),
+
+/***/ "./resources/js/components/MyAutocomplete.vue?vue&type=template&id=0990be42&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/MyAutocomplete.vue?vue&type=template&id=0990be42& ***!
+  \***********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_template_id_0990be42___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./MyAutocomplete.vue?vue&type=template&id=0990be42& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MyAutocomplete.vue?vue&type=template&id=0990be42&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_template_id_0990be42___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MyAutocomplete_vue_vue_type_template_id_0990be42___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
