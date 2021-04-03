@@ -1,6 +1,6 @@
 <template >
 <div class="columns is-vcentered">
-    <div class="column is-1">
+    <div class="column is-2">
         <div class="select">
             <select :value="limit" v-on:change="handleLimitChange($event)">
                 <option value="15">15</option>
@@ -9,12 +9,9 @@
             </select>
         </div>
     </div>
+
     <div class="column">
-
         <span class="has-text-grey">{{from.toLocaleString()}} - {{to.toLocaleString()}} of {{totalItem.toLocaleString()}}</span>
-
-
-
     </div>
 
     <div class="column">

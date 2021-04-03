@@ -12,7 +12,6 @@
 
     </div>
 
-
     <!-- <input type="text" class="input is-loading"> -->
     <div class="columns" v-if="showOptions" style="height:20%; ">
         <div class="column" >
