@@ -22,10 +22,17 @@ class FormController extends Controller
     {
         $query = Form::with('author')->withCount('sheets');
 
-        if($request->has('search')) {
+        if( $request->has('search') &&
+            is_string($request->search)) {
+
             $query->search($request->search);
         }
 
+        if( $request->has('filter') &&
+            is_array($request->filters)) {
+
+            $query->filter($request->filter);
+        }
 
         if($request->sort) {
             foreach ($request->sort as $field => $value) {
