@@ -2042,7 +2042,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'MyAutoComplete',
   props: {
@@ -2391,9 +2390,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
 //
 //
 //
@@ -28988,7 +28984,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "columns is-vcentered" }, [
-    _c("div", { staticClass: "column is-1" }, [
+    _c("div", { staticClass: "column is-2" }, [
       _c("div", { staticClass: "select" }, [
         _c(
           "select",

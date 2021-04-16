@@ -63,6 +63,12 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
 
+    Route::get('user')->group(function(){
+
+        Route::get('/', 'UserController@index');
+
+    });
+
 
 
 });
