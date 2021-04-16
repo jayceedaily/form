@@ -47,7 +47,9 @@ trait HasSearchable
         if(count($searchable)) {
 
             $query->orWhereHas($searchColumn, function($_query) use ($searchable, $keyword) {
+
                 $_query->where(function($_query) use ($searchable, $keyword) {
+
                     $this->createSearchQuery($_query, $searchable, $keyword);
                 });
             });
@@ -55,7 +57,9 @@ trait HasSearchable
         } else {
 
             $query->orWhere(function($_query) use ($searchColumn, $keyword) {
+
                 $_query->orWhere($searchColumn, 'LIKE', "%$keyword" );
+
                 $_query->orWhere($searchColumn, 'LIKE', "$keyword%" );
             });
         }
