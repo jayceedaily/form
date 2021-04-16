@@ -2,16 +2,26 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasFilters;
 use App\Models\Traits\HasSearchable;
 
 class Form extends Model
 {
-    use HasSearchable;
+    use HasSearchable, HasFilters;
 
     protected $searchable = [
         'questions.content',
         'author.name',
-        'name'];
+        'name'
+    ];
+
+    protected $filters = [
+        'author.id'
+    ];
+
+    protected $sort = [
+        'author.id'
+    ];
 
     protected $fillable = ['name', 'description', 'has_random_questions'];
 
