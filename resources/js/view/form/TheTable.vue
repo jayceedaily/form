@@ -109,11 +109,12 @@ export default {
                 this.sortables[sortVariable] = this.sortables[sortVariable] + 1;
             }
 
-            let _sort = {};
+            let _filters = this.formFilters;
 
-            _sort["sort["+ sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
+            _filters.page = 0;
+            _filters["sort["+ sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
 
-            this.formSetFilter(_sort);
+            this.formSetFilter(_filters);
         }
     }
 }
