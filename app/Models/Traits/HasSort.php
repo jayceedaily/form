@@ -5,59 +5,65 @@ use Illuminate\Database\Eloquent\Builder;
 use RuntimeException;
 use InvalidArgumentException;
 
-trait HasFilters
+trait HasSort
 {
     /**
-     * Initialize filters
+     * Initialize sorts
      *
      * @param Builder $query
-     * @param array $filter
+     * @param array $sort
      * @return void
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
-    public function scopeFilter(Builder $query, Array $filter = [])
+    public function scopeSort(Builder $query, Array $sort = [])
     {
-        if(!$this->filters || !$filter) {
+        if(!$this->sort || !$sort) {
 
             return;
         }
 
-        foreach($this->filters as $filterable) {
+        foreach($this->sort as $sortable) {
 
-            if(in_array($filterable, array_keys($filter))) {
+            if(in_array($sortable, array_keys($sort))) {
 
-                $filterables = \explode('.', $filterable);
+                $sortables = explode('.', $sortable);
 
-                $this->createFilterQuery($query, $filterables, $filter[$filterable]);
+                $value = "DESC";
+
+                if( strtoupper($sort[$sortable]) == "ASC" ) {
+                    $value = "ASC";
+                }
+
+                $this->createSortQuery($query, $sortables, $value);
             }
         }
     }
 
     /**
-     * Generate filter query
+     * Generate sort query
      *
      * @param Builder $query
-     * @param array $filterables
+     * @param array $sortables
      * @param string $value
      * @return void
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
-    private function createFilterQuery(Builder $query, Array $filterables, String $value)
+    private function createSortQuery(Builder $query, Array $sortables, String $value)
     {
-        $filterColumn = array_shift($filterables);
+        $sortColumn = array_shift($sortables);
 
-        if(count($filterables)) {
+        if(count($sortables)) {
 
-            $query->whereHas($filterColumn, function($_query) use ($filterables, $value) {
+            $query->whereHas($sortColumn, function($_query) use ($sortables, $value) {
 
-                $this->createFilterQuery($_query, $filterables, $value);
+                $this->createSortQuery($_query, $sortables, $value);
             });
 
         } else {
 
-            $query->where($filterColumn, $value);
+            $query->where($sortColumn, $value);
         }
     }
 }
