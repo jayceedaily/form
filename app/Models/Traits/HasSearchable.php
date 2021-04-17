@@ -31,6 +31,24 @@ trait HasSearchable
     }
 
     /**
+     * Set searchable on runtime
+     *
+     * @param Illuminate\Database\Eloquent\Builder $query
+     * @param mixed $params
+     * @return void
+     */
+    public function scopeSetSearchable(Builder $query, Mixed $params)
+    {
+        if(!is_array($params)) {
+            $params = [$params];
+        }
+
+        $searchables = array_merge($this->searchable, $params);
+
+        $this->searchable = $searchables;
+    }
+
+    /**
      * Generate search query
      *
      * @param Builder $query
@@ -58,9 +76,14 @@ trait HasSearchable
 
             $query->orWhere(function($_query) use ($searchColumn, $keyword) {
 
-                $_query->orWhere($searchColumn, 'LIKE', "%$keyword" );
+                $keywords = explode(" ", $keyword);
 
-                $_query->orWhere($searchColumn, 'LIKE', "$keyword%" );
+                foreach ($keywords as $_keyword) {
+
+                    $_query->orWhere($searchColumn, 'LIKE', "%$_keyword" );
+
+                    $_query->orWhere($searchColumn, 'LIKE', "$_keyword%" );
+                }
             });
         }
     }
