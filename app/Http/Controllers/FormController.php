@@ -29,7 +29,7 @@ class FormController extends Controller
         }
 
         if( $request->has('filter') &&
-            is_array($request->filters)) {
+            is_array($request->filter)) {
 
             $query->filter($request->filter);
         }
