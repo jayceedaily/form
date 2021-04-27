@@ -28,41 +28,7 @@ trait HasSearchable
 
             $searchables = explode('.', $searchable);
 
-            $searchColumn = array_pop($searchables);
-
-            if(count($searchables) >= 1) {
-
-                $query->leftJoinRelationship(implode('.',$searchables));
-
-                $relationshipTable = array_pop($searchables);
-
-                $tableName = $this->$relationshipTable()->getRelated()->getTable();
-
-                $query->orWhere("$tableName.$searchColumn", 'LIKE', "%$keyword%");
-
-                $keywords = explode(" ", $keyword);
-
-                foreach ($keywords as $_keyword) {
-
-                    $query->orWhere("$tableName.$searchColumn", 'LIKE', "%$_keyword" );
-
-                    $query->orWhere("$tableName.$searchColumn", 'LIKE', "$_keyword%" );
-                }
-
-            } else {
-                $tableName = $this->getTable();
-
-                $query->orWhere("$tableName.$searchColumn", 'LIKE', "%$keyword%");
-
-                $keywords = explode(" ", $keyword);
-
-                foreach ($keywords as $_keyword) {
-
-                    $query->orWhere("$tableName.$searchColumn", 'LIKE', "%$_keyword" );
-
-                    $query->orWhere("$tableName.$searchColumn", 'LIKE', "$_keyword%" );
-                }
-            }
+            $this->createSearchQuery($query, $searchables, $keyword);
         }
     }
 
@@ -94,5 +60,45 @@ trait HasSearchable
     public function scopeResetSearchable(Builder $query, Mixed $params)
     {
         $this->searchable = [];
+    }
+
+    /**
+     * Generate search query
+     *
+     * @param Builder $query
+     * @param array $searchable
+     * @param string $keyword
+     * @return void
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
+    private function createSearchQuery(Builder $query, Array $searchable, String $keyword)
+    {
+        $searchColumn = array_shift($searchable);
+
+        if(count($searchable)) {
+
+            $query->orWhereHas($searchColumn, function($_query) use ($searchable, $keyword) {
+
+                $_query->where(function($_query) use ($searchable, $keyword) {
+
+                    $this->createSearchQuery($_query, $searchable, $keyword);
+                });
+            });
+
+        } else {
+
+            $query->orWhere(function($_query) use ($searchColumn, $keyword) {
+
+                $keywords = explode(" ", $keyword);
+
+                foreach ($keywords as $_keyword) {
+
+                    $_query->orWhere($searchColumn, 'LIKE', "%$_keyword" );
+
+                    $_query->orWhere($searchColumn, 'LIKE', "$_keyword%" );
+                }
+            });
+        }
     }
 }

@@ -34,12 +34,10 @@ class FormController extends Controller
             $query->filter($request->filter);
         }
 
-        if($request->sort) {
-            foreach ($request->sort as $field => $value) {
-                $query->orderBy($field, $value);
-            }
-        } else {
-            $query->orderBy('created_at', 'DESC');
+        if( $request->has('sort') &&
+            is_array($request->sort)) {
+
+            $query->filter($request->filter);
         }
 
         return response($query->paginate($request->limit ?? 15));

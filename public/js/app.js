@@ -2906,6 +2906,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2917,7 +2923,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      showFilterModal: false
+      showFilterModal: false,
+      searchQuery: ""
     };
   },
   watch: {
@@ -2930,13 +2937,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       immediate: true
     }
   },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])({
+    formFilters: 'form/filters'
+  })),
   created: function created() {
     var filters = this.$route.query;
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])({
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])({
     loadForms: 'form/load',
     formSetFilter: 'form/setFilter'
-  }))
+  })), {}, {
+    handleSearch: function handleSearch() {
+      var _filters = {
+        search: this.searchQuery
+      };
+      this.formSetFilter(_filters);
+    }
+  })
 });
 
 /***/ }),
@@ -3652,9 +3669,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.sortables[sortVariable] = this.sortables[sortVariable] + 1;
       }
 
-      var _sort = {};
-      _sort["sort[" + sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
-      this.formSetFilter(_sort);
+      var _filters = this.formFilters;
+      _filters.page = 0;
+      _filters["sort[" + sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
+      this.formSetFilter(_filters);
     }
   })
 });
@@ -3801,7 +3819,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nli.my-autocomplete-item {\n    margin-bottom: 5px;\n    cursor: pointer;\n    padding: 10px;\n}\nli.my-autocomplete-item:hover {\n    background-color: #e2e2e2;\n}\n\n\n", ""]);
+exports.push([module.i, "\nli.my-autocomplete-item {\r\n    margin-bottom: 5px;\r\n    cursor: pointer;\r\n    padding: 10px;\n}\nli.my-autocomplete-item:hover {\r\n    background-color: #e2e2e2;\n}\r\n\r\n\r\n", ""]);
 
 // exports
 
@@ -3820,7 +3838,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.page-wrapper {\r\n\tdisplay: flex;\r\n\tmin-height: 100vh;\r\n\tflex-direction: column;\n}\n.content-wrapper {\r\n\tflex: 1;\n}\r\n", ""]);
+exports.push([module.i, "\n.page-wrapper {\n\tdisplay: flex;\n\tmin-height: 100vh;\n\tflex-direction: column;\n}\n.content-wrapper {\n\tflex: 1;\n}\n", ""]);
 
 // exports
 
@@ -3839,7 +3857,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.list-complete-item {\r\n  transition: all 1s;\r\n  display: inline-block;\r\n  margin-right: 10px;\n}\n.list-complete-enter, .list-complete-leave-to\r\n/* .list-complete-leave-active below version 2.1.8 */ {\r\n  opacity: 0;\r\n  transform: translateY(30px);\n}\n.list-complete-leave-active {\r\n    width: 100%;\r\n  position: absolute;\n}\r\n", ""]);
+exports.push([module.i, "\n.list-complete-item {\n  transition: all 1s;\n  display: inline-block;\n  margin-right: 10px;\n}\n.list-complete-enter, .list-complete-leave-to\n/* .list-complete-leave-active below version 2.1.8 */ {\n  opacity: 0;\n  transform: translateY(30px);\n}\n.list-complete-leave-active {\n    width: 100%;\n  position: absolute;\n}\n", ""]);
 
 // exports
 
@@ -28698,13 +28716,13 @@ var render = function() {
                                       _c("div", { staticClass: "columns" }, [
                                         _c("div", { staticClass: "column" }, [
                                           _vm._v(
-                                            "\n                                                Create "
+                                            "\r\n                                                Create "
                                           ),
                                           _c("b", [
                                             _vm._v(_vm._s(_vm.textValue))
                                           ]),
                                           _vm._v(
-                                            "?\n                                            "
+                                            "?\r\n                                            "
                                           )
                                         ])
                                       ]),
@@ -28749,7 +28767,7 @@ var staticRenderFns = [
     return _c("div", { staticClass: "columns" }, [
       _c("div", { staticClass: "column" }, [
         _vm._v(
-          "\n                                                No result found\n                                            "
+          "\r\n                                                No result found\r\n                                            "
         )
       ])
     ])
@@ -29533,6 +29551,46 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
+      _c("div", { staticClass: "columns" }, [
+        _c("div", { staticClass: "column" }, [
+          _c(
+            "form",
+            {
+              attrs: { action: "" },
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.handleSearch($event)
+                }
+              }
+            },
+            [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.searchQuery,
+                    expression: "searchQuery"
+                  }
+                ],
+                staticClass: "input",
+                attrs: { type: "text", name: "", id: "" },
+                domProps: { value: _vm.searchQuery },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.searchQuery = $event.target.value
+                  }
+                }
+              })
+            ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
       _c("div", { staticClass: "columns" }, [
         _c(
           "div",
@@ -48086,8 +48144,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./router */ "./resources/js/router/index.js");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./store */ "./resources/js/store/index.js");
 /* harmony import */ var _services__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./services */ "./resources/js/services/index.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_6__);
 
 
 
@@ -48105,7 +48163,7 @@ files.keys().map(function (key) {
 window.request = _services__WEBPACK_IMPORTED_MODULE_5__["request"];
 window.http = _services__WEBPACK_IMPORTED_MODULE_5__["http"];
 window.axios = axios__WEBPACK_IMPORTED_MODULE_1___default.a;
-window.moment = moment__WEBPACK_IMPORTED_MODULE_7__["moment"];
+window.moment = moment__WEBPACK_IMPORTED_MODULE_6__["moment"];
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   comments: {
@@ -51373,8 +51431,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\.repositories\form\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\.repositories\form\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\Jaycee\.dev\form\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Jaycee\.dev\form\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
