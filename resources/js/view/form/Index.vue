@@ -2,8 +2,15 @@
 <div class="container">
     <div class="columns">
         <div class="column">
-            <form action="" @submit.prevent="handleSearch">
-                <input type="text" v-model="searchQuery" name="" id="" class="input">
+            <form @submit.prevent="handleSearch">
+                <p class="control has-icons-left">
+                    <!-- <input class="input" type="email" placeholder="Email"> -->
+                    <input type="text" v-model="searchQuery" name="" id="" class="input">
+
+                    <span class="icon is-small is-left">
+                        <i class="material-icons">search</i>
+                    </span>
+                </p>
             </form>
         </div>
     </div>
@@ -21,7 +28,9 @@
             </div>
         </div>
     </div>
+
     <filter-modal v-if="showFilterModal" @close="showFilterModal=false"></filter-modal>
+
 </div>
 </template>
 
@@ -48,6 +57,8 @@ export default {
 
                 let filters = this.$route.query;
 
+                filters.load = ['author'];
+
                 this.formSetFilter(filters)
 
                 this.loadForms(filters)
@@ -65,6 +76,8 @@ export default {
 
         let filters = this.$route.query;
 
+        this.searchQuery = this.formFilters.search
+
     },
     methods: {
         ...mapActions({
@@ -75,6 +88,14 @@ export default {
         handleSearch() {
             let _filters = {search: this.searchQuery};
 
+            this.formSetFilter(_filters)
+        },
+
+        handleSearchInput(value) {
+
+            console.log(value)
+
+            let _filters = {search: value.target.value};
 
             this.formSetFilter(_filters)
         }
@@ -83,5 +104,24 @@ export default {
 </script>
 
 <style>
+    .fade-enter-active,
+.fade-leave-active {
+  transition: opacity .4s linear;
+}
 
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.pop-enter-active,
+.pop-leave-active {
+  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
+}
+
+.pop-enter,
+.pop-leave-to {
+  opacity: 0;
+  transform: scale(0.3) translateY(-50%);
+}
 </style>

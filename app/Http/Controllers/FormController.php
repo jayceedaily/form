@@ -20,25 +20,7 @@ class FormController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Form::with('author')->withCount('sheets');
-
-        if( $request->has('search') &&
-            is_string($request->search)) {
-
-            $query->search($request->search);
-        }
-
-        if( $request->has('filter') &&
-            is_array($request->filter)) {
-
-            $query->filter($request->filter);
-        }
-
-        if( $request->has('sort') &&
-            is_array($request->sort)) {
-
-            $query->filter($request->filter);
-        }
+        $query = Form::traversify($request);
 
         return response($query->paginate($request->limit ?? 15));
     }

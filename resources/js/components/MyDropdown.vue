@@ -1,6 +1,6 @@
 <template>
-    <div class="dropdown is-hoverable" :class="showMenu ? 'is-active' : ''">
-        <div @click="showMenu =! showMenu" class="dropdown-trigger">
+    <div class="dropdown" :class="showMenu ? 'is-active' : ''" >
+        <div @click="showMenu =! showMenu" class="dropdown-trigger" @blur="handleBlur">
             <slot name="trigger"/>
         </div>
         <div class="dropdown-menu" role="menu"  :style="compact ? 'min-width:20px!important;' : ''">
@@ -11,7 +11,9 @@
     </div>
 </template>
 
+
 <script>
+
 export default {
     name: 'MyDropdown',
     props: {
@@ -26,6 +28,12 @@ export default {
             showMenu: false,
         }
     },
+    methods:{
+        handleBlur(){
+            console.log('red');
+        }
+    }
+
 }
 </script>
 

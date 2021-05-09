@@ -69,7 +69,7 @@ export default {
     watch: {
         formFilters: {
             handler(value) {
-                console.log('fitler change');
+
             }
         }
     },

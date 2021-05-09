@@ -19,7 +19,6 @@
         <td>
             <div class="columns is-pulled-right">
                 <div class="column">
-
                     <my-dropdown>
                         <template v-slot:trigger>
                             <button class="button is-small">

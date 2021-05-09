@@ -1,5 +1,5 @@
-<template >
-<div class="columns is-vcentered">
+<template>
+<div class="columns is-vcentered"  v-if="totalItem">
     <div class="column is-2">
         <div class="select">
             <select :value="limit" v-on:change="handleLimitChange($event)">
