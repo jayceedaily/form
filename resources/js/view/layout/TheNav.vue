@@ -1,7 +1,13 @@
 <template>
 <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
 
-  <div id="navbarBasicExample" class="navbar-menu container">
+    <a role="button" class="navbar-burger"   @click="showHamburger = !showHamburger" :class="showHamburger ? 'is-active' : ''" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+    </a>
+
+  <div id="navbarBasicExample" class="navbar-menu"  :class="showHamburger ? 'is-active' : ''" >
 
     <div class="navbar-start">
         <a class="navbar-item is-loading">
@@ -39,6 +45,11 @@
 import { mapGetters } from 'vuex'
 export default {
     name: 'TheNav',
+    data(){
+        return {
+            showHamburger: false
+        }
+    },
     computed:{
         ...mapGetters({user:'auth/user', leftText: 'nav/leftText'})
     }
