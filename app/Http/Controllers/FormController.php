@@ -22,7 +22,7 @@ class FormController extends Controller
     {
         $query = Form::traversify($request);
 
-        return response($query->paginate($request->limit ?? 15));
+        return response($query->paginate($request->limit ?? 15)->appends($request->query()));
     }
 
     /**
