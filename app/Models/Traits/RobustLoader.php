@@ -8,18 +8,18 @@ use InvalidArgumentException;
 trait RobustLoader
 {
 
-    public function scopeRobust(Builder $query, Array $filter = [])
+    public function scopeRobust(Builder $query, Array $loader = [])
     {
-        if(!$this->loaders || !$filter) {
+        if(!$this->loaders || !$loader) {
 
             return;
         }
 
-        foreach($this->loaders as $filterable) {
+        foreach($this->loaders as $loaderable) {
 
-            if(in_array($filterable, array_keys($filter))) {
+            if(\in_array($loaderable, \array_values($loader))) {
 
-                $query->with($filterable);
+                $query->with($loaderable);
             }
         }
     }
