@@ -2949,7 +2949,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     '$route.query': {
       handler: function handler() {
         var filters = this.$route.query;
-        filters.load = ['author'];
+        filters.load = ['author', 'sheets'];
         this.formSetFilter(filters);
         this.loadForms(filters);
       },
@@ -2974,7 +2974,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.formSetFilter(_filters);
     },
     handleSearchInput: function handleSearchInput(value) {
-      console.log(value);
       var _filters = {
         search: value.target.value
       };
@@ -3820,9 +3819,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TheNav',
+  data: function data() {
+    return {
+      showHamburger: false
+    };
+  },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
     user: 'auth/user',
     leftText: 'nav/leftText'
@@ -3862,7 +3872,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity .4s linear;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.pop-enter-active,\n.pop-leave-active {\n  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;\n}\n.pop-enter,\n.pop-leave-to {\n  opacity: 0;\n  transform: scale(0.3) translateY(-50%);\n}\n", ""]);
+exports.push([module.i, "\n.fade-enter-active,\r\n.fade-leave-active {\r\n  transition: opacity .4s linear;\n}\n.fade-enter,\r\n.fade-leave-to {\r\n  opacity: 0;\n}\n.pop-enter-active,\r\n.pop-leave-active {\r\n  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;\n}\n.pop-enter,\r\n.pop-leave-to {\r\n  opacity: 0;\r\n  transform: scale(0.3) translateY(-50%);\n}\r\n", ""]);
 
 // exports
 
@@ -3881,7 +3891,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.page-wrapper {\n\tdisplay: flex;\n\tmin-height: 100vh;\n\tflex-direction: column;\n}\n.content-wrapper {\n\tflex: 1;\n}\n", ""]);
+exports.push([module.i, "\n.page-wrapper {\r\n\tdisplay: flex;\r\n\tmin-height: 100vh;\r\n\tflex-direction: column;\n}\n.content-wrapper {\r\n\tflex: 1;\n}\r\n", ""]);
 
 // exports
 
@@ -3919,7 +3929,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.list-complete-item {\n  transition: all 1s;\n  display: inline-block;\n  margin-right: 10px;\n}\n.list-complete-enter, .list-complete-leave-to\n/* .list-complete-leave-active below version 2.1.8 */ {\n  opacity: 0;\n  transform: translateY(30px);\n}\n.list-complete-leave-active {\n    width: 100%;\n  position: absolute;\n}\n", ""]);
+exports.push([module.i, "\n.list-complete-item {\r\n  transition: all 1s;\r\n  display: inline-block;\r\n  margin-right: 10px;\n}\n.list-complete-enter, .list-complete-leave-to\r\n/* .list-complete-leave-active below version 2.1.8 */ {\r\n  opacity: 0;\r\n  transform: translateY(30px);\n}\n.list-complete-leave-active {\r\n    width: 100%;\r\n  position: absolute;\n}\r\n", ""]);
 
 // exports
 
@@ -30980,15 +30990,41 @@ var render = function() {
     },
     [
       _c(
+        "a",
+        {
+          staticClass: "navbar-burger",
+          class: _vm.showHamburger ? "is-active" : "",
+          attrs: {
+            role: "button",
+            "aria-label": "menu",
+            "aria-expanded": "false"
+          },
+          on: {
+            click: function($event) {
+              _vm.showHamburger = !_vm.showHamburger
+            }
+          }
+        },
+        [
+          _c("span", { attrs: { "aria-hidden": "true" } }),
+          _vm._v(" "),
+          _c("span", { attrs: { "aria-hidden": "true" } }),
+          _vm._v(" "),
+          _c("span", { attrs: { "aria-hidden": "true" } })
+        ]
+      ),
+      _vm._v(" "),
+      _c(
         "div",
         {
-          staticClass: "navbar-menu container",
+          staticClass: "navbar-menu",
+          class: _vm.showHamburger ? "is-active" : "",
           attrs: { id: "navbarBasicExample" }
         },
         [
           _c("div", { staticClass: "navbar-start" }, [
             _c("a", { staticClass: "navbar-item is-loading" }, [
-              _vm._v("\r\n            " + _vm._s(_vm.leftText) + "\r\n        ")
+              _vm._v("\n            " + _vm._s(_vm.leftText) + "\n        ")
             ])
           ]),
           _vm._v(" "),
@@ -31014,9 +31050,9 @@ var render = function() {
                 [
                   _c("a", { staticClass: "navbar-link" }, [
                     _vm._v(
-                      "\r\n            " +
+                      "\n            " +
                         _vm._s(_vm.user.name) +
-                        "\r\n            "
+                        "\n            "
                     )
                   ]),
                   _vm._v(" "),
@@ -31038,15 +31074,15 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "navbar-dropdown" }, [
       _c("a", { staticClass: "navbar-item" }, [
-        _vm._v("\r\n                About\r\n            ")
+        _vm._v("\n                About\n            ")
       ]),
       _vm._v(" "),
       _c("a", { staticClass: "navbar-item" }, [
-        _vm._v("\r\n                Jobs\r\n            ")
+        _vm._v("\n                Jobs\n            ")
       ]),
       _vm._v(" "),
       _c("a", { staticClass: "navbar-item" }, [
-        _vm._v("\r\n                Contact\r\n            ")
+        _vm._v("\n                Contact\n            ")
       ]),
       _vm._v(" "),
       _c("hr", { staticClass: "navbar-divider" }),
@@ -51599,8 +51635,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\Jaycee\.dev\form\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\Jaycee\.dev\form\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\aloha\.repositories\form\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\aloha\.repositories\form\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
