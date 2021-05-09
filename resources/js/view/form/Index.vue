@@ -57,7 +57,7 @@ export default {
 
                 let filters = this.$route.query;
 
-                filters.load = ['author'];
+                filters.load = ['author', 'sheets'];
 
                 this.formSetFilter(filters)
 
@@ -92,8 +92,6 @@ export default {
         },
 
         handleSearchInput(value) {
-
-            console.log(value)
 
             let _filters = {search: value.target.value};
 
