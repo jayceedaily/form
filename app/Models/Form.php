@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Models\Traits\HasFilters;
 use App\Models\Traits\HasSearchable;
 use App\Models\Traits\RobustLoader;
+use App\Models\Traits\HasSort;
 
 class Form extends Model
 {
-    use HasSearchable, HasFilters, RobustLoader;
+    use HasSearchable, HasFilters, HasSort, RobustLoader;
 
     protected $searchable = [
         'questions.content',
@@ -62,7 +63,7 @@ class Form extends Model
         if( $request->has('sort') &&
             is_array($request->sort)) {
 
-            $query->filter($request->filter);
+            $query->sort($request->sort);
         }
 
         if( $request->has('load') &&
