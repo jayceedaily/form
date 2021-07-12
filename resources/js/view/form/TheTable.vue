@@ -7,7 +7,7 @@
                 </th>
                 <th class="has-text-grey-light">Responses</th>
                 <th>
-                    <a @click="handleSort('created_at')" class="has-text-grey-light">Author  <i v-if="sort[sortables.created_at] != null" class="material-icons" style="vertical-align:middle">{{sort[sortables.created_at] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
+                    <a @click="handleSort('author.name')" class="has-text-grey-light">Author <i v-if="sort[sortables['author.name']] != null" class="material-icons" style="vertical-align:middle">{{sort[sortables["author.name"]] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
                 </th>
                 <th>
                     <a @click="handleSort('created_at')" class="has-text-grey-light">Date Created  <i v-if="sort[sortables.created_at] != null" class="material-icons" style="vertical-align:middle">{{sort[sortables.created_at] == 'ASC' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i></a>
@@ -39,6 +39,8 @@
 <script>
 import TheTableRow from './TheTableRow';
 import { mapActions, mapGetters } from 'vuex';
+import {router} from '../../router'
+
 export default {
     name: 'TheTable',
 
@@ -49,6 +51,7 @@ export default {
             sortables: {
                 name: 0,
                 created_at: 0,
+                "author.name": 0,
             }
         }
     },
@@ -87,14 +90,33 @@ export default {
             filters.page = page
 
             this.formSetFilter(filters);
+
+            router.push({
+                ...router.currentRoute,
+                query: filters
+            }).catch(()=> {});
+
         },
 
         handleLimitChange(limit) {
 
-            this.formSetFilter({limit});
+            let filters = this.formFilters;
+
+            filters.limit = limit
+
+            this.formSetFilter(filters);
+
+            router.push({
+                ...router.currentRoute,
+                query: filters
+            }).catch(()=> {});
+
+            // this.formSetFilter({limit});
         },
 
         handleSort(sortVariable) {
+
+            // console.log(sortVariable)
 
             // reset values
             Object.keys(this.sortables).forEach((key, value) => {
@@ -115,6 +137,11 @@ export default {
             _filters["sort["+ sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
 
             this.formSetFilter(_filters);
+
+            router.push({
+                ...router.currentRoute,
+                query: _filters
+            }).catch(()=> {});
         }
     }
 }
