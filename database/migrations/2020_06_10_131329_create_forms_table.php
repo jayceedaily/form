@@ -33,6 +33,8 @@ class CreateFormsTable extends Migration
             $table->timestamps();
 
             $table->softDeletes();
+
+            $table->index('created_by');
         });
     }
 
