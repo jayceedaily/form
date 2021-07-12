@@ -29,17 +29,14 @@ export const baseActions = {
 
             commit('SET_COLLECTION',  response.data.data);
 
-            commit('SET_CURRENT_PAGE', response.data.current_page);
-
-            commit('SET_FROM', response.data.from);
-
-            commit('SET_TO', response.data.to);
-
-            commit('SET_PER_PAGE', response.data.per_page);
-
-            commit('SET_LAST_PAGE', response.data.last_page);
-
-            commit('SET_TOTAL', response.data.total);
+            commit('SET_PAGINATE', {
+                currentPage:    response.data.current_page,
+                from:           response.data.from,
+                to:             response.data.to,
+                perPage:        response.data.per_page,
+                lastPage:       response.data.last_page,
+                total:          response.data.total,
+            });
         }
 
         commit('SET_STATUS', statuses.idle);
@@ -62,12 +59,18 @@ export const baseActions = {
         return response;
     },
 
+    /**
+     *
+     *
+     * @param {*} param0
+     * @param {*} filters
+     */
     setFilter: async ({commit}, filters) => {
 
-        router.push({
-            ...router.currentRoute,
-            query: filters
-        }).catch(()=> {});
+        // router.push({
+        //     ...router.currentRoute,
+        //     query: filters
+        // }).catch(()=> {});
 
         commit('SET_FILTER', filters)
     },
