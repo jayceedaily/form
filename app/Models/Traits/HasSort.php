@@ -1,6 +1,7 @@
 <?php
 namespace App\Models\Traits;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use RuntimeException;
 use InvalidArgumentException;
@@ -16,11 +17,10 @@ trait HasSort
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
-    public function scopeSort(Builder $query, Array $sort = [])
+    public function scopeSort(Builder $query, Array $sort)
     {
-        if(!$this->sort || !$sort) {
-
-            return;
+        if(!$this->sort) {
+            throw new Exception("No column configured to be sorted");
         }
 
         foreach($this->sort as $sortable) {
@@ -29,13 +29,9 @@ trait HasSort
 
                 $sortables = explode('.', $sortable);
 
-                $value = "DESC";
-
-                if( strtoupper($sort[$sortable]) == "ASC" ) {
-                    $value = "ASC";
+                if( in_array(strtoupper($sort[$sortable]), ['DESC', 'ASC'])) {
+                    $this->createSortQuery($query, $sortables, $sort[$sortable]);
                 }
-
-                $this->createSortQuery($query, $sortables, $value);
             }
         }
     }
@@ -63,7 +59,7 @@ trait HasSort
 
         } else {
 
-            $query->where($sortColumn, $value);
+            $query->orderBy($sortColumn, $value);
         }
     }
 }
