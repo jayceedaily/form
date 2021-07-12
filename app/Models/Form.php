@@ -12,9 +12,9 @@ class Form extends Model
     use HasSearchable, HasFilters, HasSort, RobustLoader;
 
     protected $searchable = [
+        'name',
         'questions.content',
         'author.name',
-        'name'
     ];
 
     protected $loaders = [
@@ -26,9 +26,9 @@ class Form extends Model
     ];
 
     protected $sort = [
-        'author.id',
-        'created_at',
         'name',
+        'author.name',
+        'created_at',
     ];
 
     protected $fillable = ['name', 'description', 'has_random_questions'];
