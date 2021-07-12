@@ -117,6 +117,7 @@ export default {
         handleSort(sortVariable) {
 
             // console.log(sortVariable)
+            let _filters = this.formFilters;
 
             // reset values
             Object.keys(this.sortables).forEach((key, value) => {
@@ -131,10 +132,17 @@ export default {
                 this.sortables[sortVariable] = this.sortables[sortVariable] + 1;
             }
 
-            let _filters = this.formFilters;
 
             _filters.page = 0;
-            _filters["sort["+ sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
+
+            if(this.sort[this.sortables[sortVariable]] != null) {
+
+                _filters["sort["+ sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
+            }
+
+            else {
+                delete _filters['sort[' + sortVariable + ']']
+            }
 
             this.formSetFilter(_filters);
 

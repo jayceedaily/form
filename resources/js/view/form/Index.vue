@@ -57,7 +57,7 @@ export default {
 
                 let filters = this.$route.query;
 
-                filters.load = ['author', 'sheets'];
+                filters.load = ['author'];
 
                 this.formSetFilter(filters)
 
