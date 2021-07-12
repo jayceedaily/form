@@ -5,9 +5,12 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use RuntimeException;
 use InvalidArgumentException;
+use Kirschbaum\PowerJoins\PowerJoins;
 
 trait HasSort
 {
+    use PowerJoins;
+
     /**
      * Initialize sorts
      *
@@ -29,37 +32,27 @@ trait HasSort
 
                 $sortables = explode('.', $sortable);
 
-                if( in_array(strtoupper($sort[$sortable]), ['DESC', 'ASC'])) {
-                    $this->createSortQuery($query, $sortables, $sort[$sortable]);
+                $sortColumn = array_pop($sortables);
+
+                if(count($sortables) >= 1) {
+
+                    $query->leftJoinRelationship(\implode('.', $sortables));
+
+                    $relationshipTable = \array_pop($sortables);
+
+                    $tableName = $this->$relationshipTable()->getRelated()->getTable();
+
+                    $query->orderBy("$tableName.$sortColumn", $sort[$sortable]);
+
+                }
+
+                else {
+
+                    $tableName = $this->getTable();
+
+                    $query->orderBy("$tableName.$sortColumn", $sort[$sortable]);
                 }
             }
-        }
-    }
-
-    /**
-     * Generate sort query
-     *
-     * @param Builder $query
-     * @param array $sortables
-     * @param string $value
-     * @return void
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     */
-    private function createSortQuery(Builder $query, Array $sortables, String $value)
-    {
-        $sortColumn = array_shift($sortables);
-
-        if(count($sortables)) {
-
-            $query->whereHas($sortColumn, function($_query) use ($sortables, $value) {
-
-                $this->createSortQuery($_query, $sortables, $value);
-            });
-
-        } else {
-
-            $query->orderBy($sortColumn, $value);
         }
     }
 }
