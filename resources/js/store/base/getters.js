@@ -1,3 +1,4 @@
+
 export const baseGetters = {
     collection: (state) => {
         return state.collection;
@@ -8,7 +9,7 @@ export const baseGetters = {
     },
 
     hasSelected: (state) => {
-        return JSON.stringify(state.selected) == '{}' ? false : true;
+        return Object.entries(state.selected).length === 0
     },
 
     hasNextPage: (state) => {
