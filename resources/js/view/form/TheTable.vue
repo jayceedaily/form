@@ -23,7 +23,7 @@
                 <td colspan="100%">
                     <my-paginate :currentPage="formCurrentPage"
                         :lastPage="formLastPage"
-                        :totalItem="formTotalItem"
+                        :totalItem="formTotal"
                         :from="formItemFrom"
                         :to="formItemTo"
                         :limit="formPerPage"
@@ -55,10 +55,10 @@ export default {
 
     computed:{
         ...mapGetters({
-            forms:'form/items',
+            forms:'form/collection',
             formCurrentPage:'form/currentPage',
             formLastPage:'form/lastPage',
-            formTotalItem:'form/totalItem',
+            formTotal:'form/total',
             formItemFrom: 'form/itemFrom',
             formItemTo: 'form/itemTo',
             formFilters: 'form/filters',
