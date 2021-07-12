@@ -1,5 +1,3 @@
-import collect from "collect.js";
-
 export const baseMutations = {
     SET_COLLECTION: (state, value) => {
         state.collection = value;
@@ -13,28 +11,13 @@ export const baseMutations = {
         state.status = value;
     },
 
-    SET_CURRENT_PAGE: (state, value) => {
-        state.currentPage = value;
-    },
-
-    SET_LAST_PAGE: (state, value) => {
-        state.lastPage = value;
-    },
-
-    SET_FROM: (state, value) => {
-        state.itemFrom = value;
-    },
-
-    SET_TO: (state, value) => {
-        state.itemTo = value;
-    },
-
-    SET_PER_PAGE: (state, value) => {
-        state.perPage = value;
-    },
-
-    SET_TOTAL: (state, value) => {
-        state.total = value;
+    SET_PAGINATE: (state, {currentPage, from, to, perPage, lastPage, total}) => {
+        state.total         = total;
+        state.itemTo        = to;
+        state.perPage       = perPage;
+        state.lastPage      = lastPage;
+        state.itemFrom      = from;
+        state.currentPage   = currentPage;
     },
 
     SELECT_ITEM: (state, value = {}) => {
@@ -62,8 +45,6 @@ export const baseMutations = {
 
             return;
         }
-
-        console.warn('Index not found');
     },
 
     PREPPEND_ITEM: (state, item) => {
