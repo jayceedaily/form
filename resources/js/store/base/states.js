@@ -1,5 +1,3 @@
-
-
 const statuses = Object.freeze({
     indexing: 'INDEXING',
     showing: 'SHOWING',
