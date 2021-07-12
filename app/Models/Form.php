@@ -26,7 +26,9 @@ class Form extends Model
     ];
 
     protected $sort = [
-        'author.id'
+        'author.id',
+        'created_at',
+        'name',
     ];
 
     protected $fillable = ['name', 'description', 'has_random_questions'];
