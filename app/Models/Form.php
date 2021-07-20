@@ -2,33 +2,33 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasFilters;
-use App\Models\Traits\HasSearchable;
-use App\Models\Traits\RobustLoader;
-use App\Models\Traits\HasSort;
+use Traversify\Traversify;
 
 class Form extends Model
 {
-    use HasSearchable, HasFilters, HasSort, RobustLoader;
+    use Traversify;
 
-    protected $searchable = [
-        'name',
-        'questions.content',
-        'author.name',
-    ];
+    protected $traversify = [
 
-    protected $loaders = [
-        'author', 'sheets'
-    ];
+        'search' => [
+            'name',
 
-    protected $filters = [
-        'author.id'
-    ];
+            'author.name',
+        ],
 
-    protected $sort = [
-        'name',
-        'author.name',
-        'created_at',
+        'autoload' => [
+            'author', 'sheets'
+        ],
+
+        'filters' => [
+            'author.id'
+        ],
+
+        'sort' => [
+            'name',
+            'author.name',
+            'created_at',
+        ]
     ];
 
     protected $fillable = ['name', 'description', 'has_random_questions'];
@@ -48,30 +48,4 @@ class Form extends Model
         return $this->hasMany('App\Models\Sheet');
     }
 
-    public function scopeTraversify($query, $request)
-    {
-        if( $request->has('search') &&
-            is_string($request->search)) {
-
-            $query->search($request->search);
-        }
-
-        if( $request->has('filter') &&
-            is_array($request->filter)) {
-
-            $query->filter($request->filter);
-        }
-
-        if( $request->has('sort') &&
-            is_array($request->sort)) {
-
-            $query->sort($request->sort);
-        }
-
-        if( $request->has('load') &&
-            is_array($request->load)) {
-
-            $query->robust($request->load);
-        }
-    }
 }
