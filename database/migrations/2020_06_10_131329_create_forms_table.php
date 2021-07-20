@@ -16,7 +16,7 @@ class CreateFormsTable extends Migration
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
+            $table->string('name')->index();
 
             $table->longText('description')->nullable();
 
@@ -24,7 +24,7 @@ class CreateFormsTable extends Migration
 
             $table->boolean('accept_answers')->default(0);
 
-            $table->foreignId('created_by');
+            $table->foreignId('created_by')->index();
 
             $table->foreign('created_by')
             ->on('users')
@@ -32,9 +32,7 @@ class CreateFormsTable extends Migration
 
             $table->timestamps();
 
-            $table->softDeletes();
-
-            $table->index('created_by');
+            $table->softDeletes()->index();
         });
     }
 
