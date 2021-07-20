@@ -10,6 +10,8 @@ const statuses = Object.freeze({
     idle: 'IDLE',
 });
 
+
+
 export const baseActions = {
 
     /**
@@ -142,7 +144,7 @@ export const baseActions = {
     },
 
     select: ({commit}, data = {}) => {
-        commit('SELECT_ITEM',data);
+        commit('SELECT_ITEM', data);
     },
 
     deselect: ({commit}) => {

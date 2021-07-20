@@ -8,6 +8,8 @@ class Form extends Model
 {
     use Traversify;
 
+    public $hasSearchRelationshipDriver = 'PowerJoin';
+
     protected $traversify = [
 
         'search' => [

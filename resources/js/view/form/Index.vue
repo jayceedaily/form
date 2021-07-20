@@ -38,6 +38,8 @@
 import TheTable from './TheTable';
 import FilterModal from './FilterModal';
 import { mapActions, mapGetters } from 'vuex';
+import {router} from '../../router'
+
 export default {
     name: 'Form',
     components:{
@@ -86,9 +88,15 @@ export default {
         }),
 
         handleSearch() {
-            let _filters = {search: this.searchQuery};
+            let filters = {search: this.searchQuery};
 
-            this.formSetFilter(_filters)
+            this.formSetFilter(filters);
+
+            // this.loadForms();
+            router.push({
+                ...router.currentRoute,
+                query: filters
+            }).catch(()=> {});
         },
 
         handleSearchInput(value) {
