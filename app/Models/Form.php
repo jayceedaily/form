@@ -14,7 +14,6 @@ class Form extends Model
 
         'search' => [
             'name',
-
             'author.name',
         ],
 
