@@ -24,9 +24,9 @@ Route::post('login', 'AuthController@login');
 
 // Public APIs
 
-Route::post('form/{form}/sheet', 'SheetController@store');
+Route::post('form/{form:uuid}/sheet', 'SheetController@store');
 
-Route::get('form/{form}', 'FormController@show');
+Route::get('form/{form:uuid}', 'FormController@show');
 
 Route::middleware(['auth:sanctum', 'acl'])->group(function() {
 
@@ -34,21 +34,23 @@ Route::middleware(['auth:sanctum', 'acl'])->group(function() {
 
     Route::get('init', 'AuthController@init');
 
+    Route::post('logout', 'AuthController@logout');
+
     Route::prefix('form')->group(function(){
 
         Route::get('/', 'FormController@index')->name('acl.form.access');
 
         Route::post('/', 'FormController@store')->name('acl.form.create');
 
-        Route::put('/{form}','FormController@update')->name('acl.form.update');
+        Route::put('/{form:uuid}','FormController@update')->name('acl.form.update');
 
-        Route::delete('/{form}', 'FormController@destroy')->name('acl.form.delete');
+        Route::delete('/{form:uuid}', 'FormController@destroy')->name('acl.form.delete');
 
-        Route::post('/{form}/question', 'QuestionController@store')->name('acl.question.create');
+        Route::post('/{form:uuid}/question', 'QuestionController@store')->name('acl.question.create');
 
-        Route::get('/{form}/answer', 'FormController@answer')->name('acl.answer.view');
+        Route::get('/{form:uuid}/answer', 'FormController@answer')->name('acl.answer.view');
 
-        Route::get('/{form}/download', 'FormController@download')->name('acl.form.access');
+        Route::get('/{form:uuid}/download', 'FormController@download')->name('acl.form.access');
     });
 
     Route::prefix('option')->group(function(){

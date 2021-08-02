@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+
 use Traversify\Traversify;
+use App\Models\Traits\HasUuid;
 
 class Form extends Model
 {
-    use Traversify;
+    use Traversify, HasUuid;
 
     public $hasSearchRelationshipDriver = 'PowerJoin';
 

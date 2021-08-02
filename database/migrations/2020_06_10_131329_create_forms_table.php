@@ -16,6 +16,8 @@ class CreateFormsTable extends Migration
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
 
+            $table->uuid('uuid')->index();
+
             $table->string('name')->index();
 
             $table->longText('description')->nullable();

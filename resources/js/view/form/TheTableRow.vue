@@ -27,7 +27,7 @@
                         </template>
 
                         <template  v-slot:menu >
-                                <router-link href="#" class="dropdown-item" :to="'form/' + form.id">View</router-link>
+                                <router-link href="#" class="dropdown-item" :to="'form/' + form.uuid">View</router-link>
                                 <a class="dropdown-item">Delete</a>
                         </template>
                     </my-dropdown>

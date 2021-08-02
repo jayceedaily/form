@@ -1,0 +1,140 @@
+name: Permissions
+description: |-
+
+  Permissions are the definition of what is allowed
+  to be accessed by a user with an assigned role.
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/acl/permission
+    metadata:
+      title: 'Show all permissions'
+      description: ''
+      authenticated: true
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    queryParameters:
+      page:
+        name: page
+        description: 'Current page of pagination.'
+        required: false
+        example: 1
+        type: integer
+      limit:
+        name: limit
+        description: 'Number of rows per page. Defaults to 15.'
+        required: false
+        example: 3
+        type: integer
+    bodyParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"current_page":1,"data":[{"id":1,"name":"Index Role","category":"Role","route_name":"acl.role.index","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":2,"name":"Create Role","category":"Role","route_name":"acl.role.create","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":3,"name":"Show Role","category":"Role","route_name":"acl.role.show","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":4,"name":"Update Role","category":"Role","route_name":"acl.role.update","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":5,"name":"Destroy Role","category":"Role","route_name":"acl.role.destroy","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":6,"name":"Index Permission","category":"Permission","route_name":"acl.permission.index","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":7,"name":"Create Permission","category":"Permission","route_name":"acl.permission.create","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":8,"name":"Show Permission","category":"Permission","route_name":"acl.permission.show","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":9,"name":"Edit Permission","category":"Permission","route_name":"acl.permission.edit","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":10,"name":"Destroy Permission","category":"Permission","route_name":"acl.permission.destroy","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":11,"name":"Index Role-Permission","category":"Role-Permission","route_name":"acl.role-permission.index","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":12,"name":"Create Role-Permission","category":"Role-Permission","route_name":"acl.role-permission.create","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"},{"id":13,"name":"Destroy Role-Permission","category":"Role-Permission","route_name":"acl.role-permission.destroy","level":1,"created_at":"2021-08-02T06:26:54.000000Z","updated_at":"2021-08-02T06:26:54.000000Z"}],"first_page_url":"https:\/\/form.local\/api\/acl\/permission?page=1","from":1,"last_page":1,"last_page_url":"https:\/\/form.local\/api\/acl\/permission?page=1","next_page_url":null,"path":"https:\/\/form.local\/api\/acl\/permission","per_page":15,"prev_page_url":null,"to":13,"total":13}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          x-ratelimit-limit: '60'
+          x-ratelimit-remaining: '57'
+        description: null
+    responseFields: []
+  -
+    httpMethods:
+      - POST
+    uri: api/acl/permission
+    metadata:
+      title: 'Create permission'
+      description: ''
+      authenticated: true
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    queryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: nzchefomuzhjewesmyvkmupmshgqobfdlpfngnjskwjhrbzraflqcqtepzhtzyyqniqaiiwevlpmrqilwofkcpnytvnrdsuaqcttcnxuxxjjuzmrkynfcvardzrcleeanxcukdecswvwsddrjfjxludrqkpebxzuhsqkbjnrouuayzqxdyoujrbxrjujblbowwqsouktmdztionivihhprfbokcjmifrilclivlfwhezpuxycd
+        type: string
+      category:
+        name: category
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: mjmduucblboumhevbygxnrbmlyjhsfilvfhqtywghwlnjkewfisyejdzhyoyjhlgsksoxlxcbdotqcohpersmnhajqboqcitougmxbojsnxmrnmpqkpgjhwmtfjhdcumckfxveqbtlrhftosqdnstdeo
+        type: string
+      route_name:
+        name: route_name
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: jmjkehqhhuxzimnnbobaovmxmhzhcotniiqnabcrkkabwqugdagvkmlirpvbtitarcctvyxvjzgavfkbqceznscbcrvdreevbfdtbsebzybxmtvociombumvvjqdgjgpgoqbjeprtpdqwwwhtqfxsjsvuedqhsbjuserckkfywwtqpzpeisdgxmnvxvqrpqcighgjsjkizzjrtajsocwavnxczhwinlzu
+        type: string
+      level:
+        name: level
+        description: 'Must be at least 0.'
+        required: true
+        example: 0
+        type: integer
+    responses: []
+    responseFields: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/acl/permission/{id}'
+    metadata:
+      title: 'Show permission'
+      description: ''
+      authenticated: true
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the permission.'
+        required: true
+        example: 3
+        type: integer
+    queryParameters: []
+    bodyParameters: []
+    responses:
+      -
+        status: 200
+        content: '[]'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          x-ratelimit-limit: '60'
+          x-ratelimit-remaining: '56'
+        description: null
+    responseFields: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/acl/permission/{id}'
+    metadata:
+      title: 'Delete permission'
+      description: ''
+      authenticated: true
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the permission.'
+        required: true
+        example: 11
+        type: integer
+    queryParameters: []
+    bodyParameters: []
+    responses: []
+    responseFields: []

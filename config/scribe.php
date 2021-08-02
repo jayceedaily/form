@@ -97,7 +97,7 @@ return [
                      */
                     'config' => [
                         'app.env' => 'documentation',
-                        // 'app.debug' => false,
+                    // 'app.debug' => false,
                     ],
 
                     /*
@@ -126,7 +126,7 @@ return [
                      * Cookies which should be sent with the API call.
                      */
                     'cookies' => [
-                        // 'name' => 'value'
+                        // 'XSRF-TOKEN' => 'value'
                     ],
                 ],
             ],
@@ -194,13 +194,13 @@ return [
         /*
          * Set this to true if any endpoints in your API use authentication.
          */
-        'enabled' => false,
+        'enabled' => true,
 
         /*
          * Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
          * You can then use @unauthenticated or @authenticated on individual endpoints to change their status from the default.
          */
-        'default' => false,
+        'default' => true,
 
         /*
          * Where is the auth value meant to be sent in a request?
@@ -211,7 +211,7 @@ return [
         /*
          * The name of the auth parameter (eg token, key, apiKey) or header (eg Authorization, Api-Key).
          */
-        'name' => 'key',
+        'name' => 'token',
 
         /*
          * The value of the parameter to be used by Scribe to authenticate response calls.

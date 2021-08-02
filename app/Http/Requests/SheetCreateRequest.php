@@ -25,10 +25,10 @@ class SheetCreateRequest extends FormRequest
 
 
 
-        foreach(request()->route('form')->questions as $question)
-        {
-            $rules['questions.' . $question->id] = $question->is_required ? 'required' : '' ;
-        }
+        // foreach(request()->route('form')->questions as $question)
+        // {
+        //     $rules['questions.' . $question->id] = $question->is_required ? 'required' : '' ;
+        // }
 
        return $rules;
     }

@@ -11,6 +11,8 @@ export const form = {
         endpoint: '/form',
 
         sheets: [],
+
+        key: 'uuid',
     },
 
     mutations: {
@@ -29,14 +31,13 @@ export const form = {
         loadSheets: (state, responses) => {
             state.responses = responses;
         }
-
     },
 
     actions: {
         ...base.actions,
 
         loadSheets: async({commit, state}) => {
-            let response = await http.get(state.endpoint + '/' + state.selected.id + '/sheet');
+            let response = await http.get(state.endpoint + '/' + state.selected[state.key] + '/sheet');
 
             if(response.status == 200) {
 
@@ -46,7 +47,7 @@ export const form = {
         },
 
         addQuestion: async({commit, state}, data) => {
-            let response = await http.post(state.endpoint + '/'+state.selected.id + '/question', data);
+            let response = await http.post(state.endpoint + '/'+state.selected[state.key] + '/question', data);
 
             return response;
         },
@@ -57,12 +58,10 @@ export const form = {
         },
 
         downloadResponse: async ({commit, state}) => {
-            let response = await http.download(state.endpoint + '/'+state.selected.id + '/download');
+            let response = await http.download(state.endpoint + '/'+state.selected[state.key] + '/download');
 
             return response;
         }
-
-
     },
 
     getters: {
@@ -71,7 +70,5 @@ export const form = {
         sheets: (state) => {
             return state.sheets;
         }
-
     }
-
 }

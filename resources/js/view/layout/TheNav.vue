@@ -33,7 +33,7 @@
                 Contact
             </a>
             <hr class="navbar-divider">
-            <a class="navbar-item">Logout</a>
+            <a class="navbar-item" @click="logout">Logout</a>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     name: 'TheNav',
     data(){
@@ -52,6 +52,9 @@ export default {
     },
     computed:{
         ...mapGetters({user:'auth/user', leftText: 'nav/leftText'})
+    },
+    methods: {
+        ...mapActions({logout: 'auth/logout'}),
     }
 }
 </script>

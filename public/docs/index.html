@@ -1,0 +1,1902 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Laravel Documentation</title>
+
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../docs/css/theme-default.style.css" media="screen">
+    <link rel="stylesheet" href="../docs/css/theme-default.print.css" media="print">
+    <script src="../docs/js/theme-default-3.8.0.js"></script>
+
+    <link rel="stylesheet"
+          href="//unpkg.com/@highlightjs/cdn-assets@10.7.2/styles/obsidian.min.css">
+    <script src="//unpkg.com/@highlightjs/cdn-assets@10.7.2/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <script src="//cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+    <script>
+        var baseUrl = "https://form.local";
+    </script>
+    <script src="../docs/js/tryitout-3.8.0.js"></script>
+
+</head>
+
+<body data-languages="[&quot;bash&quot;,&quot;javascript&quot;]">
+<a href="#" id="nav-button">
+      <span>
+        MENU
+        <img src="../docs/images/navbar.png" alt="navbar-image" />
+      </span>
+</a>
+<div class="tocify-wrapper">
+                <div class="lang-selector">
+                            <a href="#" data-language-name="bash">bash</a>
+                            <a href="#" data-language-name="javascript">javascript</a>
+                    </div>
+        <div class="search">
+        <input type="text" class="search" id="input-search" placeholder="Search">
+    </div>
+    <ul class="search-results"></ul>
+
+    <ul id="toc">
+    </ul>
+
+            <ul class="toc-footer" id="toc-footer">
+                            <li><a href="../docs/collection.json">View Postman collection</a></li>
+                            <li><a href="../docs/openapi.yaml">View OpenAPI spec</a></li>
+                            <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
+                    </ul>
+            <ul class="toc-footer" id="last-updated">
+            <li>Last updated: August 2 2021</li>
+        </ul>
+</div>
+<div class="page-wrapper">
+    <div class="dark-box"></div>
+    <div class="content">
+        <h1>Introduction</h1>
+<p>This documentation aims to provide all the information you need to work with our API.</p>
+<aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
+You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
+<blockquote>
+<p>Base URL</p>
+</blockquote>
+<pre><code class="language-yaml">https://form.local</code></pre>
+
+        <h1>Authenticating requests</h1>
+<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
+<p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
+<p>You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.</p>
+
+        <h1 id="permissions">Permissions</h1>
+
+    <p>Permissions are the definition of what is allowed
+to be accessed by a user with an assigned role.</p>
+
+            <h2 id="permissions-GETapi-acl-permission">Show all permissions</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-acl-permission">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "https://form.local/api/acl/permission?page=1&amp;limit=3" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/permission"
+);
+
+const params = {
+    "page": "1",
+    "limit": "3",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-acl-permission">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary>
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 57
+ </code></pre>
+        </details>         <pre>
+
+<code class="language-json">{
+    &quot;current_page&quot;: 1,
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;Index Role&quot;,
+            &quot;category&quot;: &quot;Role&quot;,
+            &quot;route_name&quot;: &quot;acl.role.index&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;name&quot;: &quot;Create Role&quot;,
+            &quot;category&quot;: &quot;Role&quot;,
+            &quot;route_name&quot;: &quot;acl.role.create&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 3,
+            &quot;name&quot;: &quot;Show Role&quot;,
+            &quot;category&quot;: &quot;Role&quot;,
+            &quot;route_name&quot;: &quot;acl.role.show&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 4,
+            &quot;name&quot;: &quot;Update Role&quot;,
+            &quot;category&quot;: &quot;Role&quot;,
+            &quot;route_name&quot;: &quot;acl.role.update&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 5,
+            &quot;name&quot;: &quot;Destroy Role&quot;,
+            &quot;category&quot;: &quot;Role&quot;,
+            &quot;route_name&quot;: &quot;acl.role.destroy&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 6,
+            &quot;name&quot;: &quot;Index Permission&quot;,
+            &quot;category&quot;: &quot;Permission&quot;,
+            &quot;route_name&quot;: &quot;acl.permission.index&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 7,
+            &quot;name&quot;: &quot;Create Permission&quot;,
+            &quot;category&quot;: &quot;Permission&quot;,
+            &quot;route_name&quot;: &quot;acl.permission.create&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 8,
+            &quot;name&quot;: &quot;Show Permission&quot;,
+            &quot;category&quot;: &quot;Permission&quot;,
+            &quot;route_name&quot;: &quot;acl.permission.show&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 9,
+            &quot;name&quot;: &quot;Edit Permission&quot;,
+            &quot;category&quot;: &quot;Permission&quot;,
+            &quot;route_name&quot;: &quot;acl.permission.edit&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 10,
+            &quot;name&quot;: &quot;Destroy Permission&quot;,
+            &quot;category&quot;: &quot;Permission&quot;,
+            &quot;route_name&quot;: &quot;acl.permission.destroy&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 11,
+            &quot;name&quot;: &quot;Index Role-Permission&quot;,
+            &quot;category&quot;: &quot;Role-Permission&quot;,
+            &quot;route_name&quot;: &quot;acl.role-permission.index&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 12,
+            &quot;name&quot;: &quot;Create Role-Permission&quot;,
+            &quot;category&quot;: &quot;Role-Permission&quot;,
+            &quot;route_name&quot;: &quot;acl.role-permission.create&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        },
+        {
+            &quot;id&quot;: 13,
+            &quot;name&quot;: &quot;Destroy Role-Permission&quot;,
+            &quot;category&quot;: &quot;Role-Permission&quot;,
+            &quot;route_name&quot;: &quot;acl.role-permission.destroy&quot;,
+            &quot;level&quot;: 1,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:54.000000Z&quot;
+        }
+    ],
+    &quot;first_page_url&quot;: &quot;https:\/\/form.local\/api\/acl\/permission?page=1&quot;,
+    &quot;from&quot;: 1,
+    &quot;last_page&quot;: 1,
+    &quot;last_page_url&quot;: &quot;https:\/\/form.local\/api\/acl\/permission?page=1&quot;,
+    &quot;next_page_url&quot;: null,
+    &quot;path&quot;: &quot;https:\/\/form.local\/api\/acl\/permission&quot;,
+    &quot;per_page&quot;: 15,
+    &quot;prev_page_url&quot;: null,
+    &quot;to&quot;: 13,
+    &quot;total&quot;: 13
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-acl-permission" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-acl-permission"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-acl-permission"></code></pre>
+</span>
+<span id="execution-error-GETapi-acl-permission" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-acl-permission"></code></pre>
+</span>
+<form id="form-GETapi-acl-permission" data-method="GET"
+      data-path="api/acl/permission"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-acl-permission', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-acl-permission"
+                    onclick="tryItOut('GETapi-acl-permission');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-acl-permission"
+                    onclick="cancelTryOut('GETapi-acl-permission');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-acl-permission" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/acl/permission</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-acl-permission" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-acl-permission"
+                                                                data-component="header"></label>
+        </p>
+                    <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                    <p>
+                <b><code>page</code></b>&nbsp;&nbsp;<small>integer</small>     <i>optional</i> &nbsp;
+                <input type="number"
+               name="page"
+               data-endpoint="GETapi-acl-permission"
+               data-component="query"  hidden>
+    <br>
+<p>Current page of pagination.</p>            </p>
+                    <p>
+                <b><code>limit</code></b>&nbsp;&nbsp;<small>integer</small>     <i>optional</i> &nbsp;
+                <input type="number"
+               name="limit"
+               data-endpoint="GETapi-acl-permission"
+               data-component="query"  hidden>
+    <br>
+<p>Number of rows per page. Defaults to 15.</p>            </p>
+                </form>
+
+            <h2 id="permissions-POSTapi-acl-permission">Create permission</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-acl-permission">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request POST \
+    "https://form.local/api/acl/permission" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"name\": \"nzchefomuzhjewesmyvkmupmshgqobfdlpfngnjskwjhrbzraflqcqtepzhtzyyqniqaiiwevlpmrqilwofkcpnytvnrdsuaqcttcnxuxxjjuzmrkynfcvardzrcleeanxcukdecswvwsddrjfjxludrqkpebxzuhsqkbjnrouuayzqxdyoujrbxrjujblbowwqsouktmdztionivihhprfbokcjmifrilclivlfwhezpuxycd\",
+    \"category\": \"mjmduucblboumhevbygxnrbmlyjhsfilvfhqtywghwlnjkewfisyejdzhyoyjhlgsksoxlxcbdotqcohpersmnhajqboqcitougmxbojsnxmrnmpqkpgjhwmtfjhdcumckfxveqbtlrhftosqdnstdeo\",
+    \"route_name\": \"jmjkehqhhuxzimnnbobaovmxmhzhcotniiqnabcrkkabwqugdagvkmlirpvbtitarcctvyxvjzgavfkbqceznscbcrvdreevbfdtbsebzybxmtvociombumvvjqdgjgpgoqbjeprtpdqwwwhtqfxsjsvuedqhsbjuserckkfywwtqpzpeisdgxmnvxvqrpqcighgjsjkizzjrtajsocwavnxczhwinlzu\",
+    \"level\": 0
+}"
+</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/permission"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "name": "nzchefomuzhjewesmyvkmupmshgqobfdlpfngnjskwjhrbzraflqcqtepzhtzyyqniqaiiwevlpmrqilwofkcpnytvnrdsuaqcttcnxuxxjjuzmrkynfcvardzrcleeanxcukdecswvwsddrjfjxludrqkpebxzuhsqkbjnrouuayzqxdyoujrbxrjujblbowwqsouktmdztionivihhprfbokcjmifrilclivlfwhezpuxycd",
+    "category": "mjmduucblboumhevbygxnrbmlyjhsfilvfhqtywghwlnjkewfisyejdzhyoyjhlgsksoxlxcbdotqcohpersmnhajqboqcitougmxbojsnxmrnmpqkpgjhwmtfjhdcumckfxveqbtlrhftosqdnstdeo",
+    "route_name": "jmjkehqhhuxzimnnbobaovmxmhzhcotniiqnabcrkkabwqugdagvkmlirpvbtitarcctvyxvjzgavfkbqceznscbcrvdreevbfdtbsebzybxmtvociombumvvjqdgjgpgoqbjeprtpdqwwwhtqfxsjsvuedqhsbjuserckkfywwtqpzpeisdgxmnvxvqrpqcighgjsjkizzjrtajsocwavnxczhwinlzu",
+    "level": 0
+}
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-POSTapi-acl-permission">
+</span>
+<span id="execution-results-POSTapi-acl-permission" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-acl-permission"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-acl-permission"></code></pre>
+</span>
+<span id="execution-error-POSTapi-acl-permission" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-acl-permission"></code></pre>
+</span>
+<form id="form-POSTapi-acl-permission" data-method="POST"
+      data-path="api/acl/permission"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-acl-permission', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-acl-permission"
+                    onclick="tryItOut('POSTapi-acl-permission');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-acl-permission"
+                    onclick="cancelTryOut('POSTapi-acl-permission');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-acl-permission" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/acl/permission</code></b>
+        </p>
+                <p>
+            <label id="auth-POSTapi-acl-permission" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="POSTapi-acl-permission"
+                                                                data-component="header"></label>
+        </p>
+                        <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <p>
+            <b><code>name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+                <input type="text"
+               name="name"
+               data-endpoint="POSTapi-acl-permission"
+               data-component="body" required  hidden>
+    <br>
+<p>Must not be greater than 255 characters.</p>        </p>
+                <p>
+            <b><code>category</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+                <input type="text"
+               name="category"
+               data-endpoint="POSTapi-acl-permission"
+               data-component="body" required  hidden>
+    <br>
+<p>Must not be greater than 255 characters.</p>        </p>
+                <p>
+            <b><code>route_name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+                <input type="text"
+               name="route_name"
+               data-endpoint="POSTapi-acl-permission"
+               data-component="body" required  hidden>
+    <br>
+<p>Must not be greater than 255 characters.</p>        </p>
+                <p>
+            <b><code>level</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="level"
+               data-endpoint="POSTapi-acl-permission"
+               data-component="body" required  hidden>
+    <br>
+<p>Must be at least 0.</p>        </p>
+    
+    </form>
+
+            <h2 id="permissions-GETapi-acl-permission--id-">Show permission</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-acl-permission--id-">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "https://form.local/api/acl/permission/3" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/permission/3"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-acl-permission--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary>
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 56
+ </code></pre>
+        </details>         <pre>
+
+<code class="language-json">[]</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-acl-permission--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-acl-permission--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-acl-permission--id-"></code></pre>
+</span>
+<span id="execution-error-GETapi-acl-permission--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-acl-permission--id-"></code></pre>
+</span>
+<form id="form-GETapi-acl-permission--id-" data-method="GET"
+      data-path="api/acl/permission/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-acl-permission--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-acl-permission--id-"
+                    onclick="tryItOut('GETapi-acl-permission--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-acl-permission--id-"
+                    onclick="cancelTryOut('GETapi-acl-permission--id-');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-acl-permission--id-" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/acl/permission/{id}</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-acl-permission--id-" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-acl-permission--id-"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="id"
+               data-endpoint="GETapi-acl-permission--id-"
+               data-component="url" required  hidden>
+    <br>
+<p>The ID of the permission.</p>            </p>
+                    </form>
+
+            <h2 id="permissions-DELETEapi-acl-permission--id-">Delete permission</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-acl-permission--id-">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request DELETE \
+    "https://form.local/api/acl/permission/11" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/permission/11"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-DELETEapi-acl-permission--id-">
+</span>
+<span id="execution-results-DELETEapi-acl-permission--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-acl-permission--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-acl-permission--id-"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-acl-permission--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-acl-permission--id-"></code></pre>
+</span>
+<form id="form-DELETEapi-acl-permission--id-" data-method="DELETE"
+      data-path="api/acl/permission/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-acl-permission--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-acl-permission--id-"
+                    onclick="tryItOut('DELETEapi-acl-permission--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-acl-permission--id-"
+                    onclick="cancelTryOut('DELETEapi-acl-permission--id-');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-acl-permission--id-" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/acl/permission/{id}</code></b>
+        </p>
+                <p>
+            <label id="auth-DELETEapi-acl-permission--id-" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="DELETEapi-acl-permission--id-"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="id"
+               data-endpoint="DELETEapi-acl-permission--id-"
+               data-component="url" required  hidden>
+    <br>
+<p>The ID of the permission.</p>            </p>
+                    </form>
+
+        <h1 id="role-permissions">Role Permissions</h1>
+
+    <p>Manage permissions of roles</p>
+
+            <h2 id="role-permissions-GETapi-acl-role--role--permission">Show all permissions of role</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-acl-role--role--permission">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "https://form.local/api/acl/role/10/permission" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/role/10/permission"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-acl-role--role--permission">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary>
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 55
+ </code></pre>
+        </details>         <pre>
+
+<code class="language-json">{
+    &quot;message&quot;: &quot;No query results for model [SuccessApps\\Acl\\Models\\Role] 10&quot;,
+    &quot;exception&quot;: &quot;Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException&quot;,
+    &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Exceptions\/Handler.php&quot;,
+    &quot;line&quot;: 223,
+    &quot;trace&quot;: [
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Exceptions\/Handler.php&quot;,
+            &quot;line&quot;: 199,
+            &quot;function&quot;: &quot;prepareException&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Exceptions\\Handler&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/app\/Exceptions\/Handler.php&quot;,
+            &quot;line&quot;: 53,
+            &quot;function&quot;: &quot;render&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Exceptions\\Handler&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/nunomaduro\/collision\/src\/Adapters\/Laravel\/ExceptionHandler.php&quot;,
+            &quot;line&quot;: 65,
+            &quot;function&quot;: &quot;render&quot;,
+            &quot;class&quot;: &quot;App\\Exceptions\\Handler&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Pipeline.php&quot;,
+            &quot;line&quot;: 51,
+            &quot;function&quot;: &quot;render&quot;,
+            &quot;class&quot;: &quot;NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 172,
+            &quot;function&quot;: &quot;handleException&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Middleware\/ThrottleRequests.php&quot;,
+            &quot;line&quot;: 59,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Auth\/Middleware\/Authenticate.php&quot;,
+            &quot;line&quot;: 44,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Auth\\Middleware\\Authenticate&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 103,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php&quot;,
+            &quot;line&quot;: 687,
+            &quot;function&quot;: &quot;then&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php&quot;,
+            &quot;line&quot;: 662,
+            &quot;function&quot;: &quot;runRouteWithinStack&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php&quot;,
+            &quot;line&quot;: 628,
+            &quot;function&quot;: &quot;runRoute&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php&quot;,
+            &quot;line&quot;: 617,
+            &quot;function&quot;: &quot;dispatchToRoute&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php&quot;,
+            &quot;line&quot;: 165,
+            &quot;function&quot;: &quot;dispatch&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 128,
+            &quot;function&quot;: &quot;Illuminate\\Foundation\\Http\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/barryvdh\/laravel-debugbar\/src\/Middleware\/InjectDebugbar.php&quot;,
+            &quot;line&quot;: 60,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Barryvdh\\Debugbar\\Middleware\\InjectDebugbar&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TransformsRequest.php&quot;,
+            &quot;line&quot;: 21,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TransformsRequest.php&quot;,
+            &quot;line&quot;: 21,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/ValidatePostSize.php&quot;,
+            &quot;line&quot;: 27,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/CheckForMaintenanceMode.php&quot;,
+            &quot;line&quot;: 63,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\CheckForMaintenanceMode&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/fruitcake\/laravel-cors\/src\/HandleCors.php&quot;,
+            &quot;line&quot;: 37,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Fruitcake\\Cors\\HandleCors&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/fideloper\/proxy\/src\/TrustProxies.php&quot;,
+            &quot;line&quot;: 57,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Fideloper\\Proxy\\TrustProxies&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php&quot;,
+            &quot;line&quot;: 103,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php&quot;,
+            &quot;line&quot;: 140,
+            &quot;function&quot;: &quot;then&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php&quot;,
+            &quot;line&quot;: 109,
+            &quot;function&quot;: &quot;sendRequestThroughRouter&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php&quot;,
+            &quot;line&quot;: 287,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php&quot;,
+            &quot;line&quot;: 275,
+            &quot;function&quot;: &quot;callLaravelOrLumenRoute&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php&quot;,
+            &quot;line&quot;: 86,
+            &quot;function&quot;: &quot;makeApiCall&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php&quot;,
+            &quot;line&quot;: 44,
+            &quot;function&quot;: &quot;makeResponseCall&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php&quot;,
+            &quot;line&quot;: 34,
+            &quot;function&quot;: &quot;makeResponseCallIfConditionsPass&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Extractor.php&quot;,
+            &quot;line&quot;: 225,
+            &quot;function&quot;: &quot;__invoke&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Extractor.php&quot;,
+            &quot;line&quot;: 182,
+            &quot;function&quot;: &quot;iterateThroughStrategies&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Extractor.php&quot;,
+            &quot;line&quot;: 116,
+            &quot;function&quot;: &quot;fetchResponses&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/GroupedEndpoints\/GroupedEndpointsFromApp.php&quot;,
+            &quot;line&quot;: 118,
+            &quot;function&quot;: &quot;processRoute&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/GroupedEndpoints\/GroupedEndpointsFromApp.php&quot;,
+            &quot;line&quot;: 75,
+            &quot;function&quot;: &quot;extractEndpointsInfoFromLaravelApp&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/GroupedEndpoints\/GroupedEndpointsFromApp.php&quot;,
+            &quot;line&quot;: 51,
+            &quot;function&quot;: &quot;extractEndpointsInfoAndWriteToDisk&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/knuckleswtf\/scribe\/src\/Commands\/GenerateDocumentation.php&quot;,
+            &quot;line&quot;: 39,
+            &quot;function&quot;: &quot;get&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php&quot;,
+            &quot;line&quot;: 36,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Knuckles\\Scribe\\Commands\\GenerateDocumentation&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php&quot;,
+            &quot;line&quot;: 37,
+            &quot;function&quot;: &quot;Illuminate\\Container\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
+            &quot;type&quot;: &quot;::&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php&quot;,
+            &quot;line&quot;: 93,
+            &quot;function&quot;: &quot;unwrapIfClosure&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Util&quot;,
+            &quot;type&quot;: &quot;::&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php&quot;,
+            &quot;line&quot;: 37,
+            &quot;function&quot;: &quot;callBoundMethod&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
+            &quot;type&quot;: &quot;::&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Container.php&quot;,
+            &quot;line&quot;: 596,
+            &quot;function&quot;: &quot;call&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
+            &quot;type&quot;: &quot;::&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/Command.php&quot;,
+            &quot;line&quot;: 134,
+            &quot;function&quot;: &quot;call&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Container\\Container&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/symfony\/console\/Command\/Command.php&quot;,
+            &quot;line&quot;: 299,
+            &quot;function&quot;: &quot;execute&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Console\\Command&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/Command.php&quot;,
+            &quot;line&quot;: 121,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Symfony\\Component\\Console\\Command\\Command&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/symfony\/console\/Application.php&quot;,
+            &quot;line&quot;: 978,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Console\\Command&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/symfony\/console\/Application.php&quot;,
+            &quot;line&quot;: 295,
+            &quot;function&quot;: &quot;doRunCommand&quot;,
+            &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/symfony\/console\/Application.php&quot;,
+            &quot;line&quot;: 167,
+            &quot;function&quot;: &quot;doRun&quot;,
+            &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/Application.php&quot;,
+            &quot;line&quot;: 93,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Console\/Kernel.php&quot;,
+            &quot;line&quot;: 129,
+            &quot;function&quot;: &quot;run&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Console\\Application&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;\/apps\/form\/artisan&quot;,
+            &quot;line&quot;: 37,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Foundation\\Console\\Kernel&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-acl-role--role--permission" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-acl-role--role--permission"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-acl-role--role--permission"></code></pre>
+</span>
+<span id="execution-error-GETapi-acl-role--role--permission" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-acl-role--role--permission"></code></pre>
+</span>
+<form id="form-GETapi-acl-role--role--permission" data-method="GET"
+      data-path="api/acl/role/{role}/permission"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-acl-role--role--permission', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-acl-role--role--permission"
+                    onclick="tryItOut('GETapi-acl-role--role--permission');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-acl-role--role--permission"
+                    onclick="cancelTryOut('GETapi-acl-role--role--permission');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-acl-role--role--permission" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/acl/role/{role}/permission</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-acl-role--role--permission" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-acl-role--role--permission"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>role</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="role"
+               data-endpoint="GETapi-acl-role--role--permission"
+               data-component="url" required  hidden>
+    <br>
+            </p>
+                    </form>
+
+            <h2 id="role-permissions-DELETEapi-acl-role--role--permission--permission-">Remove permission from role</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-acl-role--role--permission--permission-">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request DELETE \
+    "https://form.local/api/acl/role/12/permission/2" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/role/12/permission/2"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-DELETEapi-acl-role--role--permission--permission-">
+</span>
+<span id="execution-results-DELETEapi-acl-role--role--permission--permission-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-acl-role--role--permission--permission-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-acl-role--role--permission--permission-"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-acl-role--role--permission--permission-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-acl-role--role--permission--permission-"></code></pre>
+</span>
+<form id="form-DELETEapi-acl-role--role--permission--permission-" data-method="DELETE"
+      data-path="api/acl/role/{role}/permission/{permission}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-acl-role--role--permission--permission-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-acl-role--role--permission--permission-"
+                    onclick="tryItOut('DELETEapi-acl-role--role--permission--permission-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-acl-role--role--permission--permission-"
+                    onclick="cancelTryOut('DELETEapi-acl-role--role--permission--permission-');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-acl-role--role--permission--permission-" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/acl/role/{role}/permission/{permission}</code></b>
+        </p>
+                <p>
+            <label id="auth-DELETEapi-acl-role--role--permission--permission-" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="DELETEapi-acl-role--role--permission--permission-"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>role</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="role"
+               data-endpoint="DELETEapi-acl-role--role--permission--permission-"
+               data-component="url" required  hidden>
+    <br>
+            </p>
+                    <p>
+                <b><code>permission</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="permission"
+               data-endpoint="DELETEapi-acl-role--role--permission--permission-"
+               data-component="url" required  hidden>
+    <br>
+            </p>
+                    </form>
+
+        <h1 id="roles">Roles</h1>
+
+    <p>APIs for managing users</p>
+
+            <h2 id="roles-GETapi-acl-role">Show all roles</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-acl-role">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "https://form.local/api/acl/role" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/role"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-acl-role">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary>
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 59
+ </code></pre>
+        </details>         <pre>
+
+<code class="language-json">{
+    &quot;current_page&quot;: 1,
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;superuser&quot;,
+            &quot;level&quot;: 0,
+            &quot;created_at&quot;: &quot;2021-08-02T06:26:53.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2021-08-02T06:26:53.000000Z&quot;,
+            &quot;deleted_at&quot;: null
+        }
+    ],
+    &quot;first_page_url&quot;: &quot;https:\/\/form.local\/api\/acl\/role?page=1&quot;,
+    &quot;from&quot;: 1,
+    &quot;last_page&quot;: 1,
+    &quot;last_page_url&quot;: &quot;https:\/\/form.local\/api\/acl\/role?page=1&quot;,
+    &quot;next_page_url&quot;: null,
+    &quot;path&quot;: &quot;https:\/\/form.local\/api\/acl\/role&quot;,
+    &quot;per_page&quot;: 15,
+    &quot;prev_page_url&quot;: null,
+    &quot;to&quot;: 1,
+    &quot;total&quot;: 1
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-acl-role" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-acl-role"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-acl-role"></code></pre>
+</span>
+<span id="execution-error-GETapi-acl-role" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-acl-role"></code></pre>
+</span>
+<form id="form-GETapi-acl-role" data-method="GET"
+      data-path="api/acl/role"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-acl-role', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-acl-role"
+                    onclick="tryItOut('GETapi-acl-role');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-acl-role"
+                    onclick="cancelTryOut('GETapi-acl-role');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-acl-role" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/acl/role</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-acl-role" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-acl-role"
+                                                                data-component="header"></label>
+        </p>
+                </form>
+
+            <h2 id="roles-POSTapi-acl-role">Create role</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-acl-role">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request POST \
+    "https://form.local/api/acl/role" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"name\": \"jszppjioybkmazmlsvuqpsynvxemhywdrehdmpnpwohfhnhetjywxfognndmmiqdqcwemzstzqfmdfzcesglpoukldbadpdrcnlylipinjmbzlhuldoesgckpkxvthnbkboouhskrkhsrvioscovgeslspumzcyhqqdmwnthvuvcqctlvrvgmfzmpxsocmzpvxnfzduczjkqunwkqrkwxeycycdlnkinmocaawcgslmfavyipfspduuiyyy\",
+    \"level\": 0
+}"
+</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/role"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "name": "jszppjioybkmazmlsvuqpsynvxemhywdrehdmpnpwohfhnhetjywxfognndmmiqdqcwemzstzqfmdfzcesglpoukldbadpdrcnlylipinjmbzlhuldoesgckpkxvthnbkboouhskrkhsrvioscovgeslspumzcyhqqdmwnthvuvcqctlvrvgmfzmpxsocmzpvxnfzduczjkqunwkqrkwxeycycdlnkinmocaawcgslmfavyipfspduuiyyy",
+    "level": 0
+}
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-POSTapi-acl-role">
+</span>
+<span id="execution-results-POSTapi-acl-role" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-acl-role"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-acl-role"></code></pre>
+</span>
+<span id="execution-error-POSTapi-acl-role" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-acl-role"></code></pre>
+</span>
+<form id="form-POSTapi-acl-role" data-method="POST"
+      data-path="api/acl/role"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-acl-role', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-acl-role"
+                    onclick="tryItOut('POSTapi-acl-role');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-acl-role"
+                    onclick="cancelTryOut('POSTapi-acl-role');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-acl-role" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/acl/role</code></b>
+        </p>
+                <p>
+            <label id="auth-POSTapi-acl-role" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="POSTapi-acl-role"
+                                                                data-component="header"></label>
+        </p>
+                        <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <p>
+            <b><code>name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+                <input type="text"
+               name="name"
+               data-endpoint="POSTapi-acl-role"
+               data-component="body" required  hidden>
+    <br>
+<p>Must not be greater than 255 characters.</p>        </p>
+                <p>
+            <b><code>level</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="level"
+               data-endpoint="POSTapi-acl-role"
+               data-component="body" required  hidden>
+    <br>
+<p>Must be at least 0.</p>        </p>
+    
+    </form>
+
+            <h2 id="roles-GETapi-acl-role--id-">Show role</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-acl-role--id-">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request GET \
+    --get "https://form.local/api/acl/role/18" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/role/18"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-GETapi-acl-role--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary>
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 58
+ </code></pre>
+        </details>         <pre>
+
+<code class="language-json">{
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;superuser&quot;,
+    &quot;level&quot;: 0,
+    &quot;created_at&quot;: &quot;2021-08-02T06:26:53.000000Z&quot;,
+    &quot;updated_at&quot;: &quot;2021-08-02T06:26:53.000000Z&quot;,
+    &quot;deleted_at&quot;: null
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-acl-role--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-acl-role--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-acl-role--id-"></code></pre>
+</span>
+<span id="execution-error-GETapi-acl-role--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-acl-role--id-"></code></pre>
+</span>
+<form id="form-GETapi-acl-role--id-" data-method="GET"
+      data-path="api/acl/role/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-acl-role--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-acl-role--id-"
+                    onclick="tryItOut('GETapi-acl-role--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-acl-role--id-"
+                    onclick="cancelTryOut('GETapi-acl-role--id-');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-acl-role--id-" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/acl/role/{id}</code></b>
+        </p>
+                <p>
+            <label id="auth-GETapi-acl-role--id-" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="GETapi-acl-role--id-"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="id"
+               data-endpoint="GETapi-acl-role--id-"
+               data-component="url" required  hidden>
+    <br>
+<p>The ID of the role.</p>            </p>
+                    </form>
+
+            <h2 id="roles-DELETEapi-acl-role--id-">Delete role</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-acl-role--id-">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request DELETE \
+    "https://form.local/api/acl/role/20" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/role/20"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-DELETEapi-acl-role--id-">
+</span>
+<span id="execution-results-DELETEapi-acl-role--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-acl-role--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-acl-role--id-"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-acl-role--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-acl-role--id-"></code></pre>
+</span>
+<form id="form-DELETEapi-acl-role--id-" data-method="DELETE"
+      data-path="api/acl/role/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-acl-role--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-acl-role--id-"
+                    onclick="tryItOut('DELETEapi-acl-role--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-acl-role--id-"
+                    onclick="cancelTryOut('DELETEapi-acl-role--id-');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-acl-role--id-" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/acl/role/{id}</code></b>
+        </p>
+                <p>
+            <label id="auth-DELETEapi-acl-role--id-" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="DELETEapi-acl-role--id-"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="id"
+               data-endpoint="DELETEapi-acl-role--id-"
+               data-component="url" required  hidden>
+    <br>
+<p>The ID of the role.</p>            </p>
+                    </form>
+
+            <h2 id="roles-PUTapi-acl-role--id-">Update role</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-PUTapi-acl-role--id-">
+<blockquote>Example request:</blockquote>
+
+
+<pre><code class="language-bash">curl --request PUT \
+    "https://form.local/api/acl/role/4" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"name\": \"ovgqwhuyazksouwtmgqhyevstjzwsrfyaiknqyemadbrgmcjkrjzmltcjiubhllzrwkporljcskzahuiuknxzxjjedeugwkviwymsicjylybdcigoqnnldttzlqvhvlxclblmwqspblxitixtkstwxpyzoyrikzfylzxkdqhtpqgghxiavobugrmjweilrvuwfjpzdmfiohzhwevknhpgteobdzglfcwebdqatx\",
+    \"level\": 0
+}"
+</code></pre>
+
+<pre><code class="language-javascript">const url = new URL(
+    "https://form.local/api/acl/role/4"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "name": "ovgqwhuyazksouwtmgqhyevstjzwsrfyaiknqyemadbrgmcjkrjzmltcjiubhllzrwkporljcskzahuiuknxzxjjedeugwkviwymsicjylybdcigoqnnldttzlqvhvlxclblmwqspblxitixtkstwxpyzoyrikzfylzxkdqhtpqgghxiavobugrmjweilrvuwfjpzdmfiohzhwevknhpgteobdzglfcwebdqatx",
+    "level": 0
+}
+
+fetch(url, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre>
+</span>
+
+<span id="example-responses-PUTapi-acl-role--id-">
+</span>
+<span id="execution-results-PUTapi-acl-role--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-acl-role--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-acl-role--id-"></code></pre>
+</span>
+<span id="execution-error-PUTapi-acl-role--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-acl-role--id-"></code></pre>
+</span>
+<form id="form-PUTapi-acl-role--id-" data-method="PUT"
+      data-path="api/acl/role/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}'
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-acl-role--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-acl-role--id-"
+                    onclick="tryItOut('PUTapi-acl-role--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-acl-role--id-"
+                    onclick="cancelTryOut('PUTapi-acl-role--id-');" hidden>Cancel
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-acl-role--id-" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/acl/role/{id}</code></b>
+        </p>
+                <p>
+            <label id="auth-PUTapi-acl-role--id-" hidden>Authorization header:
+                <b><code>Bearer </code></b><input type="text"
+                                                                name="Authorization"
+                                                                data-prefix="Bearer "
+                                                                data-endpoint="PUTapi-acl-role--id-"
+                                                                data-component="header"></label>
+        </p>
+                <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <p>
+                <b><code>id</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="id"
+               data-endpoint="PUTapi-acl-role--id-"
+               data-component="url" required  hidden>
+    <br>
+<p>The ID of the role.</p>            </p>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <p>
+            <b><code>name</code></b>&nbsp;&nbsp;<small>string</small>  &nbsp;
+                <input type="text"
+               name="name"
+               data-endpoint="PUTapi-acl-role--id-"
+               data-component="body" required  hidden>
+    <br>
+<p>Must not be greater than 255 characters.</p>        </p>
+                <p>
+            <b><code>level</code></b>&nbsp;&nbsp;<small>integer</small>  &nbsp;
+                <input type="number"
+               name="level"
+               data-endpoint="PUTapi-acl-role--id-"
+               data-component="body" required  hidden>
+    <br>
+<p>Must be at least 0.</p>        </p>
+    
+    </form>
+
+    
+
+        
+    </div>
+    <div class="dark-box">
+                    <div class="lang-selector">
+                                    <a href="#" data-language-name="bash">bash</a>
+                                    <a href="#" data-language-name="javascript">javascript</a>
+                            </div>
+            </div>
+</div>
+<script>
+    $(function () {
+        var exampleLanguages = ["bash","javascript"];
+        setupLanguages(exampleLanguages);
+    });
+</script>
+</body>
+</html>

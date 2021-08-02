@@ -15,8 +15,8 @@
                 <div class="column  is-8 is-offset-2">
                     <div class="tabs is-centered">
                         <ul>
-                            <router-link tag="li" :to="'/form/'+form.id"><a href="">Questions</a></router-link>
-                            <router-link tag="li" :to="'/form/'+form.id + '/response'"><a href=""><span class="mr-10">Responses</span><span class="tag is-rounded is-primary">{{form.sheets_count}}</span></a></router-link>
+                            <router-link tag="li" :to="'/form/'+form.uuid"><a href="">Questions</a></router-link>
+                            <router-link tag="li" :to="'/form/'+form.uuid + '/response'"><a href=""><span class="mr-10">Responses</span><span class="tag is-rounded is-primary">{{form.sheets_count}}</span></a></router-link>
                         </ul>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="columns">
                                     <div class="column">
-                                        <textarea name="" id="" cols="30" rows="10" class="textarea" v-model="form.description" @input="handleChanges"></textarea>
+                                        <my-editor v-model="form.description" @input="handleChanges"/>
                                     </div>
                                 </div>
                                 <!-- <h1 class="is-size-3 mb-10">{{form.name}}</h1> -->
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="form.questions.length > 0">
+                <div v-if="form.questions && form.questions.length > 0">
                     <transition-group name="list-complete">
                         <div class="columns  list-complete-item" v-for="(question, index) in form.questions" :key="question.id">
                             <div class="column is-8 is-offset-2" >
@@ -89,12 +89,14 @@ import QuestionItem from './QuestionItem';
 import DeleteQuestionModal from './DeleteQuestionModal';
 import ShowFormResponse from './ShowFormResponse';
 
+
 export default {
     name: 'ShowForm',
     components: {
         QuestionItem,
         DeleteQuestionModal,
-        ShowFormResponse
+        ShowFormResponse,
+
     },
 
     data: function() {
@@ -102,6 +104,7 @@ export default {
             isLoading: true,
             showDeleteQuestionModal: false,
             isTyping: null,
+            editor: null
         }
     },
 
@@ -142,7 +145,7 @@ export default {
                 if(response.status == 201) {
                     this.form.questions.insert(value-1 ,response.data);
 
-                    setTimeout(()=>{
+                    setTimeout(()=> {
                         VueScrollTo.scrollTo('#question'+response.data.id,1000, {offset:-30})
                     }, 100)
                 }
