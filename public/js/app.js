@@ -433,17 +433,33 @@ function contains(parent, child) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return getBoundingClientRect; });
-function getBoundingClientRect(element) {
+/* harmony import */ var _instanceOf_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./instanceOf.js */ "./node_modules/@popperjs/core/lib/dom-utils/instanceOf.js");
+
+var round = Math.round;
+function getBoundingClientRect(element, includeScale) {
+  if (includeScale === void 0) {
+    includeScale = false;
+  }
+
   var rect = element.getBoundingClientRect();
+  var scaleX = 1;
+  var scaleY = 1;
+
+  if (Object(_instanceOf_js__WEBPACK_IMPORTED_MODULE_0__["isHTMLElement"])(element) && includeScale) {
+    // Fallback to 1 in case both values are `0`
+    scaleX = rect.width / element.offsetWidth || 1;
+    scaleY = rect.height / element.offsetHeight || 1;
+  }
+
   return {
-    width: rect.width,
-    height: rect.height,
-    top: rect.top,
-    right: rect.right,
-    bottom: rect.bottom,
-    left: rect.left,
-    x: rect.left,
-    y: rect.top
+    width: round(rect.width / scaleX),
+    height: round(rect.height / scaleY),
+    top: round(rect.top / scaleY),
+    right: round(rect.right / scaleX),
+    bottom: round(rect.bottom / scaleY),
+    left: round(rect.left / scaleX),
+    x: round(rect.left / scaleX),
+    y: round(rect.top / scaleY)
   };
 }
 
@@ -569,17 +585,26 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- // Returns the composite rect of an element relative to its offsetParent.
+
+
+function isElementScaled(element) {
+  var rect = element.getBoundingClientRect();
+  var scaleX = rect.width / element.offsetWidth || 1;
+  var scaleY = rect.height / element.offsetHeight || 1;
+  return scaleX !== 1 || scaleY !== 1;
+} // Returns the composite rect of an element relative to its offsetParent.
 // Composite means it takes into account transforms as well as layout.
+
 
 function getCompositeRect(elementOrVirtualElement, offsetParent, isFixed) {
   if (isFixed === void 0) {
     isFixed = false;
   }
 
-  var documentElement = Object(_getDocumentElement_js__WEBPACK_IMPORTED_MODULE_5__["default"])(offsetParent);
-  var rect = Object(_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_0__["default"])(elementOrVirtualElement);
   var isOffsetParentAnElement = Object(_instanceOf_js__WEBPACK_IMPORTED_MODULE_3__["isHTMLElement"])(offsetParent);
+  var offsetParentIsScaled = Object(_instanceOf_js__WEBPACK_IMPORTED_MODULE_3__["isHTMLElement"])(offsetParent) && isElementScaled(offsetParent);
+  var documentElement = Object(_getDocumentElement_js__WEBPACK_IMPORTED_MODULE_5__["default"])(offsetParent);
+  var rect = Object(_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_0__["default"])(elementOrVirtualElement, offsetParentIsScaled);
   var scroll = {
     scrollLeft: 0,
     scrollTop: 0
@@ -596,7 +621,7 @@ function getCompositeRect(elementOrVirtualElement, offsetParent, isFixed) {
     }
 
     if (Object(_instanceOf_js__WEBPACK_IMPORTED_MODULE_3__["isHTMLElement"])(offsetParent)) {
-      offsets = Object(_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_0__["default"])(offsetParent);
+      offsets = Object(_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_0__["default"])(offsetParent, true);
       offsets.x += offsetParent.clientLeft;
       offsets.y += offsetParent.clientTop;
     } else if (documentElement) {
@@ -4352,9 +4377,12 @@ const ClipboardTextSerializer = Extension.create({
     },
 });
 
-const blur = () => ({ view }) => {
-    const element = view.dom;
-    element.blur();
+const blur = () => ({ editor, view }) => {
+    requestAnimationFrame(() => {
+        if (!editor.isDestroyed) {
+            view.dom.blur();
+        }
+    });
     return true;
 };
 
@@ -4606,28 +4634,41 @@ function resolveSelection(state, position = null) {
     };
 }
 const focus = (position = null) => ({ editor, view, tr, dispatch, }) => {
+    const delayedFocus = () => {
+        // For React we have to focus asynchronously. Otherwise wild things happen.
+        // see: https://github.com/ueberdosis/tiptap/issues/1520
+        requestAnimationFrame(() => {
+            if (!editor.isDestroyed) {
+                view.focus();
+            }
+        });
+    };
     if ((view.hasFocus() && position === null) || position === false) {
         return true;
     }
     // we don’t try to resolve a NodeSelection or CellSelection
     if (dispatch && position === null && !isTextSelection(editor.state.selection)) {
-        view.focus();
+        delayedFocus();
         return true;
     }
     const { from, to } = resolveSelection(editor.state, position) || editor.state.selection;
     const { doc, storedMarks } = tr;
-    const resolvedFrom = minMax(from, 0, doc.content.size);
-    const resolvedEnd = minMax(to, 0, doc.content.size);
+    const minPos = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["Selection"].atStart(doc).from;
+    const maxPos = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["Selection"].atEnd(doc).to;
+    const resolvedFrom = minMax(from, minPos, maxPos);
+    const resolvedEnd = minMax(to, minPos, maxPos);
     const selection = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["TextSelection"].create(doc, resolvedFrom, resolvedEnd);
     const isSameSelection = editor.state.selection.eq(selection);
     if (dispatch) {
-        tr.setSelection(selection);
+        if (!isSameSelection) {
+            tr.setSelection(selection);
+        }
         // `tr.setSelection` resets the stored marks
         // so we’ll restore them if the selection is the same as before
         if (isSameSelection && storedMarks) {
             tr.setStoredMarks(storedMarks);
         }
-        view.focus();
+        delayedFocus();
     }
     return true;
 };
@@ -4646,8 +4687,8 @@ var forEach$1 = /*#__PURE__*/Object.freeze({
   forEach: forEach
 });
 
-const insertContent = value => ({ tr, commands }) => {
-    return commands.insertContentAt({ from: tr.selection.from, to: tr.selection.to }, value);
+const insertContent = (value, options) => ({ tr, commands }) => {
+    return commands.insertContentAt({ from: tr.selection.from, to: tr.selection.to }, value, options);
 };
 
 var insertContent$1 = /*#__PURE__*/Object.freeze({
@@ -4675,12 +4716,13 @@ function selectionToInsertionEnd(tr, startLen, bias) {
     tr.setSelection(prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["Selection"].near(tr.doc.resolve(end), bias));
 }
 
-const insertContentAt = (position, value) => ({ tr, dispatch, editor }) => {
+const insertContentAt = (position, value, options) => ({ tr, dispatch, editor }) => {
     if (dispatch) {
         const content = createNodeFromContent(value, editor.schema, {
             parseOptions: {
                 preserveWhitespace: 'full',
             },
+            ...(options || {}),
         });
         // don’t dispatch an empty fragment because this can lead to strange errors
         if (content.toString() === '<>') {
@@ -4841,38 +4883,6 @@ const newlineInCode = () => ({ state, dispatch }) => {
 var newlineInCode$1 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   newlineInCode: newlineInCode
-});
-
-const replace = (typeOrName, attributes = {}) => ({ state, commands }) => {
-    console.warn('[tiptap warn]: replace() is deprecated. please use insertContent() instead.');
-    const { from, to } = state.selection;
-    const range = { from, to };
-    return commands.replaceRange(range, typeOrName, attributes);
-};
-
-var replace$1 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  replace: replace
-});
-
-const replaceRange = (range, typeOrName, attributes = {}) => ({ tr, state, dispatch }) => {
-    console.warn('[tiptap warn]: replaceRange() is deprecated. please use insertContent() instead.');
-    const type = getNodeType(typeOrName, state.schema);
-    const { from, to } = range;
-    // const $from = tr.doc.resolve(from)
-    // const index = $from.index()
-    // if (!$from.parent.canReplaceWith(index, index, type)) {
-    //   return false
-    // }
-    if (dispatch) {
-        tr.replaceRangeWith(from, to, type.create(attributes));
-    }
-    return true;
-};
-
-var replaceRange$1 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  replaceRange: replaceRange
 });
 
 /**
@@ -5069,8 +5079,10 @@ var setNode$1 = /*#__PURE__*/Object.freeze({
 const setNodeSelection = position => ({ tr, dispatch }) => {
     if (dispatch) {
         const { doc } = tr;
-        const from = minMax(position, 0, doc.content.size);
-        const selection = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["NodeSelection"].create(doc, from);
+        const minPos = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["Selection"].atStart(doc).from;
+        const maxPos = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["Selection"].atEnd(doc).to;
+        const resolvedPos = minMax(position, minPos, maxPos);
+        const selection = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["NodeSelection"].create(doc, resolvedPos);
         tr.setSelection(selection);
     }
     return true;
@@ -5087,9 +5099,11 @@ const setTextSelection = position => ({ tr, dispatch }) => {
         const { from, to } = typeof position === 'number'
             ? { from: position, to: position }
             : position;
-        const boundedFrom = minMax(from, 0, doc.content.size);
-        const boundedTo = minMax(to, 0, doc.content.size);
-        const selection = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["TextSelection"].create(doc, boundedFrom, boundedTo);
+        const minPos = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["Selection"].atStart(doc).from;
+        const maxPos = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["Selection"].atEnd(doc).to;
+        const resolvedFrom = minMax(from, minPos, maxPos);
+        const resolvedEnd = minMax(to, minPos, maxPos);
+        const selection = prosemirror_state__WEBPACK_IMPORTED_MODULE_0__["TextSelection"].create(doc, resolvedFrom, resolvedEnd);
         tr.setSelection(selection);
     }
     return true;
@@ -5580,8 +5594,6 @@ const Commands = Extension.create({
             ...liftEmptyBlock$1,
             ...liftListItem$1,
             ...newlineInCode$1,
-            ...replace$1,
-            ...replaceRange$1,
             ...resetAttributes$1,
             ...scrollIntoView$1,
             ...selectAll$1,
@@ -5847,22 +5859,34 @@ class Editor extends EventEmitter {
      * @param options A list of options
      */
     setOptions(options = {}) {
-        this.options = { ...this.options, ...options };
+        this.options = {
+            ...this.options,
+            ...options,
+        };
+        if (!this.view || !this.state || this.isDestroyed) {
+            return;
+        }
+        if (this.options.editorProps) {
+            this.view.setProps(this.options.editorProps);
+        }
+        this.view.updateState(this.state);
     }
     /**
      * Update editable state of the editor.
      */
     setEditable(editable) {
         this.setOptions({ editable });
-        if (this.view && this.state && !this.isDestroyed) {
-            this.view.updateState(this.state);
-        }
     }
     /**
      * Returns whether the editor is editable.
      */
     get isEditable() {
-        return this.view && this.view.editable;
+        // since plugins are applied after creating the view
+        // `editable` is always `true` for one tick.
+        // that’s why we also have to check for `options.editable`
+        return this.options.editable
+            && this.view
+            && this.view.editable;
     }
     /**
      * Returns the editor state.
@@ -5987,6 +6011,7 @@ class Editor extends EventEmitter {
         if (selectionHasChanged) {
             this.emit('selectionUpdate', {
                 editor: this,
+                transaction,
             });
         }
         const focus = transaction.getMeta('focus');
@@ -5995,12 +6020,14 @@ class Editor extends EventEmitter {
             this.emit('focus', {
                 editor: this,
                 event: focus.event,
+                transaction,
             });
         }
         if (blur) {
             this.emit('blur', {
                 editor: this,
                 event: blur.event,
+                transaction,
             });
         }
         if (!transaction.docChanged || transaction.getMeta('preventUpdate')) {
@@ -6016,24 +6043,6 @@ class Editor extends EventEmitter {
      */
     getAttributes(nameOrType) {
         return getAttributes(this.state, nameOrType);
-    }
-    /**
-     * Get attributes of the currently selected node.
-     *
-     * @param name Name of the node
-     */
-    getNodeAttributes(name) {
-        console.warn('[tiptap warn]: editor.getNodeAttributes() is deprecated. please use editor.getAttributes() instead.');
-        return getNodeAttributes(this.state, name);
-    }
-    /**
-     * Get attributes of the currently selected mark.
-     *
-     * @param name Name of the mark
-     */
-    getMarkAttributes(name) {
-        console.warn('[tiptap warn]: editor.getMarkAttributes() is deprecated. please use editor.getAttributes() instead.');
-        return getMarkAttributes(this.state, name);
     }
     isActive(nameOrAttributes, attributesOrUndefined) {
         const name = typeof nameOrAttributes === 'string'
@@ -6789,15 +6798,15 @@ const Bold = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Mark"].create({
 /*!*********************************************************************************************!*\
   !*** ./node_modules/@tiptap/extension-bubble-menu/dist/tiptap-extension-bubble-menu.esm.js ***!
   \*********************************************************************************************/
-/*! exports provided: default, BubbleMenu, BubbleMenuPlugin, BubbleMenuPluginKey, BubbleMenuView */
+/*! exports provided: BubbleMenu, BubbleMenuPlugin, BubbleMenuView, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BubbleMenu", function() { return BubbleMenu; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BubbleMenuPlugin", function() { return BubbleMenuPlugin; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BubbleMenuPluginKey", function() { return BubbleMenuPluginKey; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BubbleMenuView", function() { return BubbleMenuView; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BubbleMenu; });
 /* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
 /* harmony import */ var prosemirror_state__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! prosemirror-state */ "./node_modules/prosemirror-state/dist/index.es.js");
 /* harmony import */ var tippy_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! tippy.js */ "./node_modules/tippy.js/dist/tippy.esm.js");
@@ -6806,8 +6815,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class BubbleMenuView {
-    constructor({ editor, element, view, tippyOptions, }) {
+    constructor({ editor, element, view, tippyOptions, shouldShow, }) {
         this.preventHide = false;
+        this.shouldShow = ({ state, from, to }) => {
+            const { doc, selection } = state;
+            const { empty } = selection;
+            // Sometime check for `empty` is not enough.
+            // Doubleclick an empty paragraph returns a node size of 2.
+            // So we check also for an empty text size.
+            const isEmptyTextBlock = !doc.textBetween(from, to).length
+                && Object(_tiptap_core__WEBPACK_IMPORTED_MODULE_0__["isTextSelection"])(state.selection);
+            if (empty || isEmptyTextBlock) {
+                return false;
+            }
+            return true;
+        };
         this.mousedownHandler = () => {
             this.preventHide = true;
         };
@@ -6833,15 +6855,22 @@ class BubbleMenuView {
         this.editor = editor;
         this.element = element;
         this.view = view;
+        if (shouldShow) {
+            this.shouldShow = shouldShow;
+        }
         this.element.addEventListener('mousedown', this.mousedownHandler, { capture: true });
         this.view.dom.addEventListener('dragstart', this.dragstartHandler);
         this.editor.on('focus', this.focusHandler);
         this.editor.on('blur', this.blurHandler);
-        this.createTooltip(tippyOptions);
         this.element.style.visibility = 'visible';
+        // We create tippy asynchronously to make sure that `editor.options.element`
+        // has already been moved to the right position in the DOM
+        requestAnimationFrame(() => {
+            this.createTooltip(tippyOptions);
+        });
     }
     createTooltip(options = {}) {
-        this.tippy = Object(tippy_js__WEBPACK_IMPORTED_MODULE_2__["default"])(this.view.dom, {
+        this.tippy = Object(tippy_js__WEBPACK_IMPORTED_MODULE_2__["default"])(this.editor.options.element, {
             duration: 0,
             getReferenceClientRect: null,
             content: this.element,
@@ -6853,28 +6882,32 @@ class BubbleMenuView {
         });
     }
     update(view, oldState) {
+        var _a;
         const { state, composing } = view;
         const { doc, selection } = state;
         const isSame = oldState && oldState.doc.eq(doc) && oldState.selection.eq(selection);
         if (composing || isSame) {
             return;
         }
-        const { empty, ranges } = selection;
         // support for CellSelections
+        const { ranges } = selection;
         const from = Math.min(...ranges.map(range => range.$from.pos));
         const to = Math.max(...ranges.map(range => range.$to.pos));
-        // Sometime check for `empty` is not enough.
-        // Doubleclick an empty paragraph returns a node size of 2.
-        // So we check also for an empty text size.
-        const isEmptyTextBlock = !doc.textBetween(from, to).length
-            && Object(_tiptap_core__WEBPACK_IMPORTED_MODULE_0__["isTextSelection"])(view.state.selection);
-        if (empty || isEmptyTextBlock) {
+        const shouldShow = this.shouldShow({
+            editor: this.editor,
+            view,
+            state,
+            oldState,
+            from,
+            to,
+        });
+        if (!shouldShow) {
             this.hide();
             return;
         }
-        this.tippy.setProps({
+        (_a = this.tippy) === null || _a === void 0 ? void 0 : _a.setProps({
             getReferenceClientRect: () => {
-                if (Object(_tiptap_core__WEBPACK_IMPORTED_MODULE_0__["isNodeSelection"])(view.state.selection)) {
+                if (Object(_tiptap_core__WEBPACK_IMPORTED_MODULE_0__["isNodeSelection"])(state.selection)) {
                     const node = view.nodeDOM(from);
                     if (node) {
                         return node.getBoundingClientRect();
@@ -6886,23 +6919,27 @@ class BubbleMenuView {
         this.show();
     }
     show() {
-        this.tippy.show();
+        var _a;
+        (_a = this.tippy) === null || _a === void 0 ? void 0 : _a.show();
     }
     hide() {
-        this.tippy.hide();
+        var _a;
+        (_a = this.tippy) === null || _a === void 0 ? void 0 : _a.hide();
     }
     destroy() {
-        this.tippy.destroy();
+        var _a;
+        (_a = this.tippy) === null || _a === void 0 ? void 0 : _a.destroy();
         this.element.removeEventListener('mousedown', this.mousedownHandler);
         this.view.dom.removeEventListener('dragstart', this.dragstartHandler);
         this.editor.off('focus', this.focusHandler);
         this.editor.off('blur', this.blurHandler);
     }
 }
-const BubbleMenuPluginKey = new prosemirror_state__WEBPACK_IMPORTED_MODULE_1__["PluginKey"]('menuBubble');
 const BubbleMenuPlugin = (options) => {
     return new prosemirror_state__WEBPACK_IMPORTED_MODULE_1__["Plugin"]({
-        key: BubbleMenuPluginKey,
+        key: typeof options.pluginKey === 'string'
+            ? new prosemirror_state__WEBPACK_IMPORTED_MODULE_1__["PluginKey"](options.pluginKey)
+            : options.pluginKey,
         view: view => new BubbleMenuView({ view, ...options }),
     });
 };
@@ -6912,6 +6949,8 @@ const BubbleMenu = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Extension"].create
     defaultOptions: {
         element: null,
         tippyOptions: {},
+        pluginKey: 'bubbleMenu',
+        shouldShow: null,
     },
     addProseMirrorPlugins() {
         if (!this.options.element) {
@@ -6919,15 +6958,16 @@ const BubbleMenu = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Extension"].create
         }
         return [
             BubbleMenuPlugin({
+                pluginKey: this.options.pluginKey,
                 editor: this.editor,
                 element: this.options.element,
                 tippyOptions: this.options.tippyOptions,
+                shouldShow: this.options.shouldShow,
             }),
         ];
     },
 });
 
-/* harmony default export */ __webpack_exports__["default"] = (BubbleMenu);
 
 //# sourceMappingURL=tiptap-extension-bubble-menu.esm.js.map
 
@@ -7105,12 +7145,13 @@ const CodeBlock = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Node"].create({
 /*!*******************************************************************************!*\
   !*** ./node_modules/@tiptap/extension-code/dist/tiptap-extension-code.esm.js ***!
   \*******************************************************************************/
-/*! exports provided: default, Code, inputRegex, pasteRegex */
+/*! exports provided: Code, default, inputRegex, pasteRegex */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Code", function() { return Code; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Code; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "inputRegex", function() { return inputRegex; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pasteRegex", function() { return pasteRegex; });
 /* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
@@ -7157,12 +7198,11 @@ const Code = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Mark"].create({
     },
     addPasteRules() {
         return [
-            Object(_tiptap_core__WEBPACK_IMPORTED_MODULE_0__["markPasteRule"])(inputRegex, this.type),
+            Object(_tiptap_core__WEBPACK_IMPORTED_MODULE_0__["markPasteRule"])(pasteRegex, this.type),
         ];
     },
 });
 
-/* harmony default export */ __webpack_exports__["default"] = (Code);
 
 //# sourceMappingURL=tiptap-extension-code.esm.js.map
 
@@ -7235,15 +7275,15 @@ const Dropcursor = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Extension"].create
 /*!*************************************************************************************************!*\
   !*** ./node_modules/@tiptap/extension-floating-menu/dist/tiptap-extension-floating-menu.esm.js ***!
   \*************************************************************************************************/
-/*! exports provided: default, FloatingMenu, FloatingMenuPlugin, FloatingMenuPluginKey, FloatingMenuView */
+/*! exports provided: FloatingMenu, FloatingMenuPlugin, FloatingMenuView, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FloatingMenu", function() { return FloatingMenu; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FloatingMenuPlugin", function() { return FloatingMenuPlugin; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FloatingMenuPluginKey", function() { return FloatingMenuPluginKey; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FloatingMenuView", function() { return FloatingMenuView; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FloatingMenu; });
 /* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
 /* harmony import */ var prosemirror_state__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! prosemirror-state */ "./node_modules/prosemirror-state/dist/index.es.js");
 /* harmony import */ var tippy_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! tippy.js */ "./node_modules/tippy.js/dist/tippy.esm.js");
@@ -7252,8 +7292,20 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class FloatingMenuView {
-    constructor({ editor, element, view, tippyOptions, }) {
+    constructor({ editor, element, view, tippyOptions, shouldShow, }) {
         this.preventHide = false;
+        this.shouldShow = ({ state }) => {
+            const { selection } = state;
+            const { $anchor, empty } = selection;
+            const isRootDepth = $anchor.depth === 1;
+            const isEmptyTextBlock = $anchor.parent.isTextblock
+                && !$anchor.parent.type.spec.code
+                && !$anchor.parent.textContent;
+            if (!empty || !isRootDepth || !isEmptyTextBlock) {
+                return false;
+            }
+            return true;
+        };
         this.mousedownHandler = () => {
             this.preventHide = true;
         };
@@ -7276,14 +7328,21 @@ class FloatingMenuView {
         this.editor = editor;
         this.element = element;
         this.view = view;
+        if (shouldShow) {
+            this.shouldShow = shouldShow;
+        }
         this.element.addEventListener('mousedown', this.mousedownHandler, { capture: true });
         this.editor.on('focus', this.focusHandler);
         this.editor.on('blur', this.blurHandler);
-        this.createTooltip(tippyOptions);
         this.element.style.visibility = 'visible';
+        // We create tippy asynchronously to make sure that `editor.options.element`
+        // has already been moved to the right position in the DOM
+        requestAnimationFrame(() => {
+            this.createTooltip(tippyOptions);
+        });
     }
     createTooltip(options = {}) {
-        this.tippy = Object(tippy_js__WEBPACK_IMPORTED_MODULE_2__["default"])(this.view.dom, {
+        this.tippy = Object(tippy_js__WEBPACK_IMPORTED_MODULE_2__["default"])(this.editor.options.element, {
             duration: 0,
             getReferenceClientRect: null,
             content: this.element,
@@ -7295,42 +7354,50 @@ class FloatingMenuView {
         });
     }
     update(view, oldState) {
+        var _a;
         const { state, composing } = view;
         const { doc, selection } = state;
+        const { from, to } = selection;
         const isSame = oldState && oldState.doc.eq(doc) && oldState.selection.eq(selection);
         if (composing || isSame) {
             return;
         }
-        const { $anchor, empty, from, to, } = selection;
-        const isRootDepth = $anchor.depth === 1;
-        const isNodeEmpty = !selection.$anchor.parent.isLeaf && !selection.$anchor.parent.textContent;
-        const isActive = isRootDepth && isNodeEmpty;
-        if (!empty || !isActive) {
+        const shouldShow = this.shouldShow({
+            editor: this.editor,
+            view,
+            state,
+            oldState,
+        });
+        if (!shouldShow) {
             this.hide();
             return;
         }
-        this.tippy.setProps({
+        (_a = this.tippy) === null || _a === void 0 ? void 0 : _a.setProps({
             getReferenceClientRect: () => Object(_tiptap_core__WEBPACK_IMPORTED_MODULE_0__["posToDOMRect"])(view, from, to),
         });
         this.show();
     }
     show() {
-        this.tippy.show();
+        var _a;
+        (_a = this.tippy) === null || _a === void 0 ? void 0 : _a.show();
     }
     hide() {
-        this.tippy.hide();
+        var _a;
+        (_a = this.tippy) === null || _a === void 0 ? void 0 : _a.hide();
     }
     destroy() {
-        this.tippy.destroy();
+        var _a;
+        (_a = this.tippy) === null || _a === void 0 ? void 0 : _a.destroy();
         this.element.removeEventListener('mousedown', this.mousedownHandler);
         this.editor.off('focus', this.focusHandler);
         this.editor.off('blur', this.blurHandler);
     }
 }
-const FloatingMenuPluginKey = new prosemirror_state__WEBPACK_IMPORTED_MODULE_1__["PluginKey"]('menuFloating');
 const FloatingMenuPlugin = (options) => {
     return new prosemirror_state__WEBPACK_IMPORTED_MODULE_1__["Plugin"]({
-        key: FloatingMenuPluginKey,
+        key: typeof options.pluginKey === 'string'
+            ? new prosemirror_state__WEBPACK_IMPORTED_MODULE_1__["PluginKey"](options.pluginKey)
+            : options.pluginKey,
         view: view => new FloatingMenuView({ view, ...options }),
     });
 };
@@ -7340,6 +7407,8 @@ const FloatingMenu = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Extension"].crea
     defaultOptions: {
         element: null,
         tippyOptions: {},
+        pluginKey: 'floatingMenu',
+        shouldShow: null,
     },
     addProseMirrorPlugins() {
         if (!this.options.element) {
@@ -7347,15 +7416,16 @@ const FloatingMenu = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Extension"].crea
         }
         return [
             FloatingMenuPlugin({
+                pluginKey: this.options.pluginKey,
                 editor: this.editor,
                 element: this.options.element,
                 tippyOptions: this.options.tippyOptions,
+                shouldShow: this.options.shouldShow,
             }),
         ];
     },
 });
 
-/* harmony default export */ __webpack_exports__["default"] = (FloatingMenu);
 
 //# sourceMappingURL=tiptap-extension-floating-menu.esm.js.map
 
@@ -7600,12 +7670,13 @@ const History = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Extension"].create({
 /*!*****************************************************************************************************!*\
   !*** ./node_modules/@tiptap/extension-horizontal-rule/dist/tiptap-extension-horizontal-rule.esm.js ***!
   \*****************************************************************************************************/
-/*! exports provided: default, HorizontalRule */
+/*! exports provided: HorizontalRule, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HorizontalRule", function() { return HorizontalRule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return HorizontalRule; });
 /* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
 /* harmony import */ var prosemirror_state__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! prosemirror-state */ "./node_modules/prosemirror-state/dist/index.es.js");
 
@@ -7629,14 +7700,28 @@ const HorizontalRule = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Node"].create(
         return {
             setHorizontalRule: () => ({ chain }) => {
                 return chain()
+                    // remove node before hr if it’s an empty text block
+                    .command(({ tr, dispatch }) => {
+                    const { selection } = tr;
+                    const { empty, $anchor } = selection;
+                    const isEmptyTextBlock = $anchor.parent.isTextblock
+                        && !$anchor.parent.type.spec.code
+                        && !$anchor.parent.textContent;
+                    if (!empty || !isEmptyTextBlock || !dispatch) {
+                        return true;
+                    }
+                    const posBefore = $anchor.before();
+                    tr.deleteRange(posBefore, posBefore + 1);
+                    return true;
+                })
                     .insertContent({ type: this.name })
+                    // add node after hr if it’s the end of the document
                     .command(({ tr, dispatch }) => {
                     var _a;
                     if (dispatch) {
                         const { parent, pos } = tr.selection.$from;
                         const posAfter = pos + 1;
                         const nodeAfter = tr.doc.nodeAt(posAfter);
-                        // end of document
                         if (!nodeAfter) {
                             const node = (_a = parent.type.contentMatch.defaultType) === null || _a === void 0 ? void 0 : _a.create();
                             if (node) {
@@ -7659,7 +7744,6 @@ const HorizontalRule = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Node"].create(
     },
 });
 
-/* harmony default export */ __webpack_exports__["default"] = (HorizontalRule);
 
 //# sourceMappingURL=tiptap-extension-horizontal-rule.esm.js.map
 
@@ -7873,12 +7957,13 @@ const OrderedList = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Node"].create({
 /*!*****************************************************************************************!*\
   !*** ./node_modules/@tiptap/extension-paragraph/dist/tiptap-extension-paragraph.esm.js ***!
   \*****************************************************************************************/
-/*! exports provided: default, Paragraph */
+/*! exports provided: Paragraph, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Paragraph", function() { return Paragraph; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Paragraph; });
 /* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
 
 
@@ -7901,7 +7986,7 @@ const Paragraph = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Node"].create({
     addCommands() {
         return {
             setParagraph: () => ({ commands }) => {
-                return commands.toggleNode('paragraph', 'paragraph');
+                return commands.setNode('paragraph');
             },
         };
     },
@@ -7912,7 +7997,6 @@ const Paragraph = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Node"].create({
     },
 });
 
-/* harmony default export */ __webpack_exports__["default"] = (Paragraph);
 
 //# sourceMappingURL=tiptap-extension-paragraph.esm.js.map
 
@@ -8028,32 +8112,31 @@ const Text = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Node"].create({
 /*!*************************************************************************!*\
   !*** ./node_modules/@tiptap/starter-kit/dist/tiptap-starter-kit.esm.js ***!
   \*************************************************************************/
-/*! exports provided: default, defaultExtensions */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return StarterKit; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultExtensions", function() { return defaultExtensions; });
-/* harmony import */ var _tiptap_extension_dropcursor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/extension-dropcursor */ "./node_modules/@tiptap/extension-dropcursor/dist/tiptap-extension-dropcursor.esm.js");
-/* harmony import */ var _tiptap_extension_gapcursor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tiptap/extension-gapcursor */ "./node_modules/@tiptap/extension-gapcursor/dist/tiptap-extension-gapcursor.esm.js");
-/* harmony import */ var _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @tiptap/extension-document */ "./node_modules/@tiptap/extension-document/dist/tiptap-extension-document.esm.js");
-/* harmony import */ var _tiptap_extension_paragraph__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @tiptap/extension-paragraph */ "./node_modules/@tiptap/extension-paragraph/dist/tiptap-extension-paragraph.esm.js");
-/* harmony import */ var _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @tiptap/extension-text */ "./node_modules/@tiptap/extension-text/dist/tiptap-extension-text.esm.js");
-/* harmony import */ var _tiptap_extension_history__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @tiptap/extension-history */ "./node_modules/@tiptap/extension-history/dist/tiptap-extension-history.esm.js");
-/* harmony import */ var _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tiptap/extension-bold */ "./node_modules/@tiptap/extension-bold/dist/tiptap-extension-bold.esm.js");
-/* harmony import */ var _tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @tiptap/extension-italic */ "./node_modules/@tiptap/extension-italic/dist/tiptap-extension-italic.esm.js");
-/* harmony import */ var _tiptap_extension_code__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @tiptap/extension-code */ "./node_modules/@tiptap/extension-code/dist/tiptap-extension-code.esm.js");
-/* harmony import */ var _tiptap_extension_code_block__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @tiptap/extension-code-block */ "./node_modules/@tiptap/extension-code-block/dist/tiptap-extension-code-block.esm.js");
+/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
+/* harmony import */ var _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tiptap/extension-blockquote */ "./node_modules/@tiptap/extension-blockquote/dist/tiptap-extension-blockquote.esm.js");
+/* harmony import */ var _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @tiptap/extension-bold */ "./node_modules/@tiptap/extension-bold/dist/tiptap-extension-bold.esm.js");
+/* harmony import */ var _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @tiptap/extension-bullet-list */ "./node_modules/@tiptap/extension-bullet-list/dist/tiptap-extension-bullet-list.esm.js");
+/* harmony import */ var _tiptap_extension_code__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @tiptap/extension-code */ "./node_modules/@tiptap/extension-code/dist/tiptap-extension-code.esm.js");
+/* harmony import */ var _tiptap_extension_code_block__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @tiptap/extension-code-block */ "./node_modules/@tiptap/extension-code-block/dist/tiptap-extension-code-block.esm.js");
+/* harmony import */ var _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tiptap/extension-document */ "./node_modules/@tiptap/extension-document/dist/tiptap-extension-document.esm.js");
+/* harmony import */ var _tiptap_extension_dropcursor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @tiptap/extension-dropcursor */ "./node_modules/@tiptap/extension-dropcursor/dist/tiptap-extension-dropcursor.esm.js");
+/* harmony import */ var _tiptap_extension_gapcursor__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @tiptap/extension-gapcursor */ "./node_modules/@tiptap/extension-gapcursor/dist/tiptap-extension-gapcursor.esm.js");
+/* harmony import */ var _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @tiptap/extension-hard-break */ "./node_modules/@tiptap/extension-hard-break/dist/tiptap-extension-hard-break.esm.js");
 /* harmony import */ var _tiptap_extension_heading__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @tiptap/extension-heading */ "./node_modules/@tiptap/extension-heading/dist/tiptap-extension-heading.esm.js");
-/* harmony import */ var _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @tiptap/extension-hard-break */ "./node_modules/@tiptap/extension-hard-break/dist/tiptap-extension-hard-break.esm.js");
-/* harmony import */ var _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @tiptap/extension-strike */ "./node_modules/@tiptap/extension-strike/dist/tiptap-extension-strike.esm.js");
-/* harmony import */ var _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @tiptap/extension-blockquote */ "./node_modules/@tiptap/extension-blockquote/dist/tiptap-extension-blockquote.esm.js");
-/* harmony import */ var _tiptap_extension_horizontal_rule__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @tiptap/extension-horizontal-rule */ "./node_modules/@tiptap/extension-horizontal-rule/dist/tiptap-extension-horizontal-rule.esm.js");
-/* harmony import */ var _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @tiptap/extension-bullet-list */ "./node_modules/@tiptap/extension-bullet-list/dist/tiptap-extension-bullet-list.esm.js");
-/* harmony import */ var _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @tiptap/extension-ordered-list */ "./node_modules/@tiptap/extension-ordered-list/dist/tiptap-extension-ordered-list.esm.js");
-/* harmony import */ var _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @tiptap/extension-list-item */ "./node_modules/@tiptap/extension-list-item/dist/tiptap-extension-list-item.esm.js");
-/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
+/* harmony import */ var _tiptap_extension_history__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @tiptap/extension-history */ "./node_modules/@tiptap/extension-history/dist/tiptap-extension-history.esm.js");
+/* harmony import */ var _tiptap_extension_horizontal_rule__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @tiptap/extension-horizontal-rule */ "./node_modules/@tiptap/extension-horizontal-rule/dist/tiptap-extension-horizontal-rule.esm.js");
+/* harmony import */ var _tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @tiptap/extension-italic */ "./node_modules/@tiptap/extension-italic/dist/tiptap-extension-italic.esm.js");
+/* harmony import */ var _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @tiptap/extension-list-item */ "./node_modules/@tiptap/extension-list-item/dist/tiptap-extension-list-item.esm.js");
+/* harmony import */ var _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @tiptap/extension-ordered-list */ "./node_modules/@tiptap/extension-ordered-list/dist/tiptap-extension-ordered-list.esm.js");
+/* harmony import */ var _tiptap_extension_paragraph__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @tiptap/extension-paragraph */ "./node_modules/@tiptap/extension-paragraph/dist/tiptap-extension-paragraph.esm.js");
+/* harmony import */ var _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @tiptap/extension-strike */ "./node_modules/@tiptap/extension-strike/dist/tiptap-extension-strike.esm.js");
+/* harmony import */ var _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @tiptap/extension-text */ "./node_modules/@tiptap/extension-text/dist/tiptap-extension-text.esm.js");
 
 
 
@@ -8074,92 +8157,68 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const StarterKit = _tiptap_core__WEBPACK_IMPORTED_MODULE_18__["Extension"].create({
+const StarterKit = _tiptap_core__WEBPACK_IMPORTED_MODULE_0__["Extension"].create({
     name: 'starterKit',
     addExtensions() {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
         const extensions = [];
         if (this.options.blockquote !== false) {
-            extensions.push(_tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_13__["default"].configure((_a = this.options) === null || _a === void 0 ? void 0 : _a.blockquote));
+            extensions.push(_tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__["default"].configure((_a = this.options) === null || _a === void 0 ? void 0 : _a.blockquote));
         }
         if (this.options.bold !== false) {
-            extensions.push(_tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_6__["default"].configure((_b = this.options) === null || _b === void 0 ? void 0 : _b.bold));
+            extensions.push(_tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__["default"].configure((_b = this.options) === null || _b === void 0 ? void 0 : _b.bold));
         }
         if (this.options.bulletList !== false) {
-            extensions.push(_tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_15__["default"].configure((_c = this.options) === null || _c === void 0 ? void 0 : _c.bulletList));
+            extensions.push(_tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__["default"].configure((_c = this.options) === null || _c === void 0 ? void 0 : _c.bulletList));
         }
         if (this.options.code !== false) {
-            extensions.push(_tiptap_extension_code__WEBPACK_IMPORTED_MODULE_8__["default"].configure((_d = this.options) === null || _d === void 0 ? void 0 : _d.code));
+            extensions.push(_tiptap_extension_code__WEBPACK_IMPORTED_MODULE_4__["default"].configure((_d = this.options) === null || _d === void 0 ? void 0 : _d.code));
         }
         if (this.options.codeBlock !== false) {
-            extensions.push(_tiptap_extension_code_block__WEBPACK_IMPORTED_MODULE_9__["default"].configure((_e = this.options) === null || _e === void 0 ? void 0 : _e.codeBlock));
+            extensions.push(_tiptap_extension_code_block__WEBPACK_IMPORTED_MODULE_5__["default"].configure((_e = this.options) === null || _e === void 0 ? void 0 : _e.codeBlock));
         }
         if (this.options.document !== false) {
-            extensions.push(_tiptap_extension_document__WEBPACK_IMPORTED_MODULE_2__["default"].configure((_f = this.options) === null || _f === void 0 ? void 0 : _f.document));
+            extensions.push(_tiptap_extension_document__WEBPACK_IMPORTED_MODULE_6__["default"].configure((_f = this.options) === null || _f === void 0 ? void 0 : _f.document));
         }
         if (this.options.dropcursor !== false) {
-            extensions.push(_tiptap_extension_dropcursor__WEBPACK_IMPORTED_MODULE_0__["default"].configure((_g = this.options) === null || _g === void 0 ? void 0 : _g.dropcursor));
+            extensions.push(_tiptap_extension_dropcursor__WEBPACK_IMPORTED_MODULE_7__["default"].configure((_g = this.options) === null || _g === void 0 ? void 0 : _g.dropcursor));
         }
         if (this.options.gapcursor !== false) {
-            extensions.push(_tiptap_extension_gapcursor__WEBPACK_IMPORTED_MODULE_1__["default"].configure((_h = this.options) === null || _h === void 0 ? void 0 : _h.gapcursor));
+            extensions.push(_tiptap_extension_gapcursor__WEBPACK_IMPORTED_MODULE_8__["default"].configure((_h = this.options) === null || _h === void 0 ? void 0 : _h.gapcursor));
         }
         if (this.options.hardBreak !== false) {
-            extensions.push(_tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_11__["default"].configure((_j = this.options) === null || _j === void 0 ? void 0 : _j.hardBreak));
+            extensions.push(_tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_9__["default"].configure((_j = this.options) === null || _j === void 0 ? void 0 : _j.hardBreak));
         }
         if (this.options.heading !== false) {
             extensions.push(_tiptap_extension_heading__WEBPACK_IMPORTED_MODULE_10__["default"].configure((_k = this.options) === null || _k === void 0 ? void 0 : _k.heading));
         }
         if (this.options.history !== false) {
-            extensions.push(_tiptap_extension_history__WEBPACK_IMPORTED_MODULE_5__["default"].configure((_l = this.options) === null || _l === void 0 ? void 0 : _l.history));
+            extensions.push(_tiptap_extension_history__WEBPACK_IMPORTED_MODULE_11__["default"].configure((_l = this.options) === null || _l === void 0 ? void 0 : _l.history));
         }
         if (this.options.horizontalRule !== false) {
-            extensions.push(_tiptap_extension_horizontal_rule__WEBPACK_IMPORTED_MODULE_14__["default"].configure((_m = this.options) === null || _m === void 0 ? void 0 : _m.horizontalRule));
+            extensions.push(_tiptap_extension_horizontal_rule__WEBPACK_IMPORTED_MODULE_12__["default"].configure((_m = this.options) === null || _m === void 0 ? void 0 : _m.horizontalRule));
         }
         if (this.options.italic !== false) {
-            extensions.push(_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_7__["default"].configure((_o = this.options) === null || _o === void 0 ? void 0 : _o.italic));
+            extensions.push(_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_13__["default"].configure((_o = this.options) === null || _o === void 0 ? void 0 : _o.italic));
         }
         if (this.options.listItem !== false) {
-            extensions.push(_tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_17__["default"].configure((_p = this.options) === null || _p === void 0 ? void 0 : _p.listItem));
+            extensions.push(_tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_14__["default"].configure((_p = this.options) === null || _p === void 0 ? void 0 : _p.listItem));
         }
         if (this.options.orderedList !== false) {
-            extensions.push(_tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_16__["default"].configure((_q = this.options) === null || _q === void 0 ? void 0 : _q.orderedList));
+            extensions.push(_tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_15__["default"].configure((_q = this.options) === null || _q === void 0 ? void 0 : _q.orderedList));
         }
         if (this.options.paragraph !== false) {
-            extensions.push(_tiptap_extension_paragraph__WEBPACK_IMPORTED_MODULE_3__["default"].configure((_r = this.options) === null || _r === void 0 ? void 0 : _r.paragraph));
+            extensions.push(_tiptap_extension_paragraph__WEBPACK_IMPORTED_MODULE_16__["default"].configure((_r = this.options) === null || _r === void 0 ? void 0 : _r.paragraph));
         }
         if (this.options.strike !== false) {
-            extensions.push(_tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_12__["default"].configure((_s = this.options) === null || _s === void 0 ? void 0 : _s.strike));
+            extensions.push(_tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_17__["default"].configure((_s = this.options) === null || _s === void 0 ? void 0 : _s.strike));
         }
         if (this.options.text !== false) {
-            extensions.push(_tiptap_extension_text__WEBPACK_IMPORTED_MODULE_4__["default"].configure((_t = this.options) === null || _t === void 0 ? void 0 : _t.text));
+            extensions.push(_tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__["default"].configure((_t = this.options) === null || _t === void 0 ? void 0 : _t.text));
         }
         return extensions;
     },
 });
-
-function defaultExtensions(options) {
-    console.warn('[tiptap warn]: defaultExtensions() is deprecated. please use the default export "StarterKit". "StarterKit" is a regular extension that contains all other extensions.');
-    return [
-        _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_2__["default"],
-        _tiptap_extension_paragraph__WEBPACK_IMPORTED_MODULE_3__["default"].configure(options === null || options === void 0 ? void 0 : options.paragraph),
-        _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_4__["default"],
-        _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_6__["default"].configure(options === null || options === void 0 ? void 0 : options.bold),
-        _tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_7__["default"].configure(options === null || options === void 0 ? void 0 : options.italic),
-        _tiptap_extension_code__WEBPACK_IMPORTED_MODULE_8__["default"].configure(options === null || options === void 0 ? void 0 : options.code),
-        _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_12__["default"].configure(options === null || options === void 0 ? void 0 : options.strike),
-        _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_11__["default"].configure(options === null || options === void 0 ? void 0 : options.hardBreak),
-        _tiptap_extension_heading__WEBPACK_IMPORTED_MODULE_10__["default"].configure(options === null || options === void 0 ? void 0 : options.heading),
-        _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_13__["default"].configure(options === null || options === void 0 ? void 0 : options.blockquote),
-        _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_15__["default"].configure(options === null || options === void 0 ? void 0 : options.bulletList),
-        _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_16__["default"].configure(options === null || options === void 0 ? void 0 : options.orderedList),
-        _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_17__["default"].configure(options === null || options === void 0 ? void 0 : options.listItem),
-        _tiptap_extension_horizontal_rule__WEBPACK_IMPORTED_MODULE_14__["default"].configure(options === null || options === void 0 ? void 0 : options.horizontalRule),
-        _tiptap_extension_code_block__WEBPACK_IMPORTED_MODULE_9__["default"].configure(options === null || options === void 0 ? void 0 : options.codeBlock),
-        _tiptap_extension_history__WEBPACK_IMPORTED_MODULE_5__["default"].configure(options === null || options === void 0 ? void 0 : options.history),
-        _tiptap_extension_dropcursor__WEBPACK_IMPORTED_MODULE_0__["default"].configure(options === null || options === void 0 ? void 0 : options.dropcursor),
-        _tiptap_extension_gapcursor__WEBPACK_IMPORTED_MODULE_1__["default"],
-    ];
-}
 
 
 //# sourceMappingURL=tiptap-starter-kit.esm.js.map
@@ -8271,6 +8330,10 @@ __webpack_require__.r(__webpack_exports__);
 const BubbleMenu = {
     name: 'BubbleMenu',
     props: {
+        pluginKey: {
+            type: [String, Object],
+            default: 'bubbleMenu',
+        },
         editor: {
             type: Object,
             required: true,
@@ -8278,6 +8341,10 @@ const BubbleMenu = {
         tippyOptions: {
             type: Object,
             default: () => ({}),
+        },
+        shouldShow: {
+            type: Function,
+            default: null,
         },
     },
     watch: {
@@ -8289,9 +8356,11 @@ const BubbleMenu = {
                 }
                 this.$nextTick(() => {
                     editor.registerPlugin(Object(_tiptap_extension_bubble_menu__WEBPACK_IMPORTED_MODULE_1__["BubbleMenuPlugin"])({
+                        pluginKey: this.pluginKey,
                         editor,
                         element: this.$el,
                         tippyOptions: this.tippyOptions,
+                        shouldShow: this.shouldShow,
                     }));
                 });
             },
@@ -8301,7 +8370,7 @@ const BubbleMenu = {
         return createElement('div', { style: { visibility: 'hidden' } }, this.$slots.default);
     },
     beforeDestroy() {
-        this.editor.unregisterPlugin(_tiptap_extension_bubble_menu__WEBPACK_IMPORTED_MODULE_1__["BubbleMenuPluginKey"]);
+        this.editor.unregisterPlugin(this.pluginKey);
     },
 };
 
@@ -8369,6 +8438,10 @@ const EditorContent = {
 const FloatingMenu = {
     name: 'FloatingMenu',
     props: {
+        pluginKey: {
+            type: [String, Object],
+            default: 'floatingMenu',
+        },
         editor: {
             type: Object,
             required: true,
@@ -8376,6 +8449,10 @@ const FloatingMenu = {
         tippyOptions: {
             type: Object,
             default: () => ({}),
+        },
+        shouldShow: {
+            type: Function,
+            default: null,
         },
     },
     watch: {
@@ -8387,9 +8464,11 @@ const FloatingMenu = {
                 }
                 this.$nextTick(() => {
                     editor.registerPlugin(Object(_tiptap_extension_floating_menu__WEBPACK_IMPORTED_MODULE_2__["FloatingMenuPlugin"])({
+                        pluginKey: this.pluginKey,
                         editor,
                         element: this.$el,
                         tippyOptions: this.tippyOptions,
+                        shouldShow: this.shouldShow,
                     }));
                 });
             },
@@ -8399,7 +8478,7 @@ const FloatingMenu = {
         return createElement('div', { style: { visibility: 'hidden' } }, this.$slots.default);
     },
     beforeDestroy() {
-        this.editor.unregisterPlugin(_tiptap_extension_floating_menu__WEBPACK_IMPORTED_MODULE_2__["FloatingMenuPluginKey"]);
+        this.editor.unregisterPlugin(this.pluginKey);
     },
 };
 
@@ -45363,7 +45442,7 @@ function endOfTextblockHorizontal(view, state, dir) {
   var $head = ref.$head;
   if (!$head.parent.isTextblock) { return false }
   var offset = $head.parentOffset, atStart = !offset, atEnd = offset == $head.parent.content.size;
-  var sel = getSelection();
+  var sel = view.root.getSelection();
   // If the textblock is all LTR, or the browser doesn't support
   // Selection.modify (Edge), fall back to a primitive approach
   if (!maybeRTL.test($head.parent.textContent) || !sel.modify)
@@ -46040,7 +46119,7 @@ var NodeViewDesc = /*@__PURE__*/(function (ViewDesc) {
   // the way the node works.
   //
   // (Using subclassing for this was intentionally decided against,
-  // since it'd require exposing a whole slew of finnicky
+  // since it'd require exposing a whole slew of finicky
   // implementation details to the user code that they probably will
   // never need.)
   NodeViewDesc.create = function create (parent, node, outerDeco, innerDeco, view, pos) {
@@ -47710,6 +47789,10 @@ function serializeForClipboard(view, slice) {
       var wrapper = doc.createElement(needsWrap[i]);
       while (wrap.firstChild) { wrapper.appendChild(wrap.firstChild); }
       wrap.appendChild(wrapper);
+      if (needsWrap[i] != "tbody") {
+        openStart++;
+        openEnd++;
+      }
     }
     firstChild = wrap.firstChild;
   }
@@ -48615,8 +48698,17 @@ function scheduleComposeEnd(view, delay) {
 }
 
 function clearComposition(view) {
-  view.composing = false;
+  if (view.composing) {
+    view.composing = false;
+    view.compositionEndedAt = timestampFromCustomEvent();
+  }
   while (view.compositionNodes.length > 0) { view.compositionNodes.pop().markParentsDirty(); }
+}
+
+function timestampFromCustomEvent() {
+  var event = document.createEvent("Event");
+  event.initEvent("event", true, true);
+  return event.timeStamp
 }
 
 function endComposition(view, forceUpdate) {
@@ -49280,6 +49372,10 @@ DecorationSet.prototype.localsInner = function localsInner (node) {
 // An object that can [provide](#view.EditorProps.decorations)
 // decorations. Implemented by [`DecorationSet`](#view.DecorationSet),
 // and passed to [node views](#view.EditorProps.nodeViews).
+//
+// map:: (Mapping, Node) → DecorationSource
+// Map the set of decorations in response to a change in the
+// document.
 
 var empty = new DecorationSet();
 
@@ -49294,6 +49390,13 @@ DecorationSet.removeOverlap = removeOverlap;
 // with (a subset of) the same interface.
 var DecorationGroup = function DecorationGroup(members) {
   this.members = members;
+};
+
+DecorationGroup.prototype.map = function map (mapping, doc) {
+  var mappedDecos = this.members.map(
+    function (member) { return member.map(mapping, doc, noSpec); }
+  );
+  return DecorationGroup.from(mappedDecos)
 };
 
 DecorationGroup.prototype.forChild = function forChild (offset, child) {
@@ -49462,7 +49565,7 @@ function withoutNulls(array) {
 
 // : ([Decoration], Node, number) → DecorationSet
 // Build up a tree that corresponds to a set of decorations. `offset`
-// is a base offset that should be subtractet from the `from` and `to`
+// is a base offset that should be subtracted from the `from` and `to`
 // positions in the spans (so that we don't have to allocate new spans
 // for recursive calls).
 function buildTree(spans, node, offset, options) {
@@ -49915,6 +50018,7 @@ function computeDocDeco(view) {
   var attrs = Object.create(null);
   attrs.class = "ProseMirror";
   attrs.contenteditable = String(view.editable);
+  attrs.translate = "no";
 
   view.someProp("attributes", function (value) {
     if (typeof value == "function") { value = value(view.state); }
