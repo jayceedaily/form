@@ -26,33 +26,7 @@ export const http = {
 					});
 	},
 
-	index: async (url, method = 'GET') =>
-	{
-		return await request(url, method)
-					.then(response =>
-					{
-						return response;
-					})
-					.catch(error =>
-					{
-						return error.response;
-					})
-	},
-
-	store: async (url, data, method = 'POST') =>
-	{
-		return await request(url, method, data)
-					.then(response =>
-					{
-						return response;
-					})
-					.catch(error =>
-					{
-						return error.response;
-					});
-	},
-
-	update: async (url, data, method = 'PUT') =>
+	put: async (url, data, method = 'PUT') =>
 	{
         return await http.store(url, data, method)
                     .then(response =>
@@ -65,33 +39,7 @@ export const http = {
                     });
 	},
 
-	show: async (url, method = 'GET') =>
-	{
-        return await http.index(url, method)
-                    .then(response =>
-                    {
-                        return response;
-                    })
-                    .catch(error =>
-                    {
-                        return error.response;
-                    });
-	},
-
-	edit: async (url, method = 'GET') =>
-	{
-        return await http.index(url, method)
-                    .then(response =>
-                    {
-                        return response;
-                    })
-                    .catch(error =>
-                    {
-                        return error.response;
-                    });
-	},
-
-	destroy: async (url, method = 'DELETE') =>
+	delete: async (url, method = 'DELETE') =>
 	{
         return await http.get(url, method)
                     .then(response =>
@@ -103,47 +51,4 @@ export const http = {
                         return error.response;
                     });
 	},
-
-	toggle: async (url, method = 'PUT') =>
-	{
-        return await http.update(url, null, method)
-                    .then(response =>
-                    {
-                        return response;
-                    })
-                    .catch(error =>
-                    {
-                        return error.response;
-                    });
-	},
-
-	upload: async(url, data) =>
-	{
-        return await http.post(url, data)
-                    .then(response =>
-                    {
-                        return response;
-                    })
-                    .catch(error =>
-                    {
-                        return error.response;
-                    });
-    },
-
-    download: async () => {
-        axios({
-            url: '/api/form/1/download',
-            method: 'GET',
-            responseType: 'blob',
-        }).then((response) => {
-             var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-             var fileLink = document.createElement('a');
-
-             fileLink.href = fileURL;
-             fileLink.setAttribute('download', 'file.xlsx');
-             document.body.appendChild(fileLink);
-
-             fileLink.click();
-        });
-    }
 }

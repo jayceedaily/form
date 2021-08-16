@@ -61,9 +61,14 @@ class FormController extends Controller
      * @param  \App\Models\Form  $form
      * @return \Illuminate\Http\Response
      */
-    public function show(Form $form)
+    public function show(Request $request, Form $form)
     {
         return response($form->load('questions.options')->loadCount('sheets'), 200);
+
+        // $questions = Question::where('form_id', $form->id)
+        $questions = $form->questions()->traversify($request)->paginate();
+
+        return response($questions, 200);
     }
 
     public function update(Request $request, Form $form)

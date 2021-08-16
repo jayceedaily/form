@@ -59,7 +59,7 @@ export default {
 
                 let filters = this.$route.query;
 
-                filters.load = ['author'];
+                filters.autoload = ['author'];
 
                 this.formSetFilter(filters)
 

@@ -1,7 +1,9 @@
 <?php
 
 use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
@@ -29,15 +31,19 @@ class UserSeeder extends Seeder
             ['Teena', 'Nartea'],
         ];
 
+        Artisan::call('acl:generate');
+
         foreach($users as $user)
         {
-            DB::table('users')->insertGetId([
+            $user = User::create([
                 'name'          => $user[0] . ' ' . $user[1],
                 'email'         => strtolower($user[0]).'.'.strtolower($user[1]).'@planate.net',
                 'password'      => bcrypt('password'),
                 'created_at'    => \Carbon\Carbon::now(),
                 'updated_at'    => \Carbon\Carbon::now(),
             ]);
+
+            $user->assignRole('superuser');
         }
     }
 }

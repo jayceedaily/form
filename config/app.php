@@ -167,6 +167,7 @@ return [
          */
         Maatwebsite\Excel\ExcelServiceProvider::class,
         SuccessApps\Acl\AclServiceProvider::class,
+        Traversify\TraversifyServiceProvider::class,
         /*
          * Application Service Providers...
          */

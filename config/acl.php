@@ -1,5 +1,7 @@
 <?php
 
 return [
-    'route_prefix' => 'acl'
+    'route_prefix' => 'acl',
+
+    'superuser_name' => 'superuser',
 ];
