@@ -37,9 +37,17 @@ export const baseStates = {
          status: statuses.idle,
 
          /**
-          * Filter props
+          * Query params used to persist
+          * API queries on runtime and reload
+          *
           */
-         filters: {},
+         queries: {},
+
+        /**
+          * Queries hidden from URL
+          * and is persisted on requests
+          */
+         __queries: {},
 
          /**
           * Pagination

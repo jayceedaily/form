@@ -25,7 +25,7 @@ export const baseActions = {
 
         commit('SET_STATUS', statuses.loading);
 
-        let response = await dispatch('index', state.filters);
+        let response = await dispatch('index', {...state.__queries, ...state.queries, });
 
         if (response.status == 200) {
 
@@ -51,12 +51,12 @@ export const baseActions = {
      * return the response value.
      *
      * @param {*} param0
-     * @param {*} filters
+     * @param {*} queries
      * @returns
      */
-    index: async({state}, filters = {}) => {
+    index: async({state}, queries = {}) => {
 
-        let response = await http.get(state.endpoint, filters);
+        let response = await http.get(state.endpoint, queries);
 
         return response;
     },
@@ -65,17 +65,28 @@ export const baseActions = {
      *
      *
      * @param {*} param0
-     * @param {*} filters
+     * @param {*} queries
      */
-    setFilter: async ({commit}, filters) => {
+    setQueries: async ({commit}, queries) => {
 
         // router.push({
         //     ...router.currentRoute,
-        //     query: filters
+        //     query: queries
         // }).catch(()=> {});
 
-        commit('SET_FILTER', filters)
+        commit('SET_QUERIES', queries)
     },
+
+    /**
+     * Set hidden queries
+     *
+     * @param {*} param0
+     * @param {*} queries
+     */
+    setHiddenQueries: async ({commit}, queries) => {
+        commit('SET_HIDDEN_QUERIES', queries)
+    },
+
 
     show: async({commit, state}, id) => {
 
@@ -123,7 +134,9 @@ export const baseActions = {
 
     unload: ({commit}) => {
 
-        commit('SET_FILTER', {});
+        commit('SET_QUERIES', {});
+
+        commit('SET_HIDDEN_QUERIES', {});
 
         commit('SET_COLLECTION', []);
     },

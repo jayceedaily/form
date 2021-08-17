@@ -48,8 +48,8 @@ export const baseGetters = {
         return state.itemTo;
     },
 
-    filters: (state) => {
-        return  Object.assign({}, state.filters);
+    queries: (state) => {
+        return  Object.assign({}, state.queries);
     },
 
     perPage: (state) => {

@@ -3,8 +3,12 @@ export const baseMutations = {
         state.collection = value;
     },
 
-    SET_FILTER: (state, value) => {
-        state.filters = value;
+    SET_QUERIES: (state, value) => {
+        state.queries = value;
+    },
+
+    SET_HIDDEN_QUERIES: (state, value) => {
+        state.__queries = value;
     },
 
     SET_STATUS: (state, value) => {
