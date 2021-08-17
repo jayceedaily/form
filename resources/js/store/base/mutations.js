@@ -1,3 +1,5 @@
+import { baseActions } from "./actions";
+
 export const baseMutations = {
     SET_COLLECTION: (state, value) => {
         state.collection = value;
@@ -13,6 +15,10 @@ export const baseMutations = {
 
     SET_STATUS: (state, value) => {
         state.status = value;
+    },
+
+    SET_SELECT_STATUS: (state, value) => {
+        state.selected.status = value;
     },
 
     SET_PAGINATE: (state, {currentPage, from, to, perPage, lastPage, total}) => {

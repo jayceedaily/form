@@ -41,14 +41,14 @@ export const http = {
 
 	delete: async (url, method = 'DELETE') =>
 	{
-        return await http.get(url, method)
-                    .then(response =>
-                    {
-                        return response;
-                    })
-                    .catch(error =>
-                    {
-                        return error.response;
-                    });
+		return await request(url, method)
+					.then(response =>
+					{
+						return response;
+					})
+					.catch(error =>
+					{
+						return error.response;
+					});
 	},
 }

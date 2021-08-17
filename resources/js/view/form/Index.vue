@@ -62,7 +62,7 @@ export default {
                 queries.autoload = ['author'];
                 queries.sort = [];
 
-                this.formSetHiddemQueries(queries)
+                this.formSetHiddenQueries(queries)
 
                 this.loadForms(queries)
             },
@@ -86,7 +86,7 @@ export default {
         ...mapActions({
             loadForms:'form/load',
             formSetQueries: 'form/setQueries',
-            formSetHiddemQueries: 'form/setHiddenQueries',
+            formSetHiddenQueries: 'form/setHiddenQueries',
         }),
 
         handleSearch() {
@@ -112,7 +112,7 @@ export default {
 </script>
 
 <style>
-    .fade-enter-active,
+.fade-enter-active,
 .fade-leave-active {
   transition: opacity .4s linear;
 }

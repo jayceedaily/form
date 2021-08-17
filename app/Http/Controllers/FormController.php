@@ -86,7 +86,7 @@ class FormController extends Controller
      */
     public function destroy(Form $form)
     {
-        //
+        $form->delete();
     }
 
     public function download(Form $form)

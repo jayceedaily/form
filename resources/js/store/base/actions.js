@@ -29,6 +29,16 @@ export const baseActions = {
 
         if (response.status == 200) {
 
+            response.data.data.forEach((item) => {
+                item.status =  statuses.idle;
+
+                item.delete = () => {
+                    dispatch('select', item);
+                    commit('SET_SELECT_STATUS', statuses.deleting);
+                    dispatch('delete');
+                }
+            });
+
             commit('SET_COLLECTION',  response.data.data);
 
             commit('SET_PAGINATE', {
@@ -168,7 +178,7 @@ export const baseActions = {
 
         commit('SET_STATUS', statuses.deleting);
 
-        let response = await http.destroy(state.endpoint + '/' + state.selected[state.key]);
+        let response = await http.delete(state.endpoint + '/' + state.selected[state.key]);
 
         if(response.status == 200) {
 
