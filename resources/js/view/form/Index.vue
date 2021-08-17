@@ -57,53 +57,55 @@ export default {
 
             handler() {
 
-                let filters = this.$route.query;
+                let queries = this.$route.query;
 
-                filters.autoload = ['author'];
+                queries.autoload = ['author'];
+                queries.sort = [];
 
-                this.formSetFilter(filters)
+                this.formSetHiddemQueries(queries)
 
-                this.loadForms(filters)
+                this.loadForms(queries)
             },
             immediate: true
         }
     },
     computed: {
         ...mapGetters({
-            formFilters: 'form/filters',
+            formQueries: 'form/queries',
         })
     },
 
     created: function() {
 
-        let filters = this.$route.query;
+        let queries = this.$route.query;
 
-        this.searchQuery = this.formFilters.search
+        this.searchQuery = this.formQueries.search
 
     },
     methods: {
         ...mapActions({
             loadForms:'form/load',
-            formSetFilter: 'form/setFilter'
+            formSetQueries: 'form/setQueries',
+            formSetHiddemQueries: 'form/setHiddenQueries',
         }),
 
         handleSearch() {
-            let filters = {search: this.searchQuery};
+            let queries = {search: this.searchQuery};
 
-            this.formSetFilter(filters);
+            this.formSetQueries(queries);
 
             // this.loadForms();
             router.push({
                 ...router.currentRoute,
-                query: filters
+                query: queries
             }).catch(()=> {});
         },
 
         handleSearchInput(value) {
 
-            let _filters = {search: value.target.value};
+            let _queries = {search: value.target.value};
 
-            this.formSetFilter(_filters)
+            this.formSetQueries(_queries)
         }
     }
 }

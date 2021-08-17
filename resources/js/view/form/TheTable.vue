@@ -64,13 +64,13 @@ export default {
             formTotal:'form/total',
             formItemFrom: 'form/itemFrom',
             formItemTo: 'form/itemTo',
-            formFilters: 'form/filters',
+            formQueries: 'form/queries',
             formPerPage: 'form/perPage',
         }),
     },
 
     watch: {
-        formFilters: {
+        formQueries: {
             handler(value) {
 
             }
@@ -81,43 +81,43 @@ export default {
 
         ...mapActions({
             formLoad: 'form/load',
-            formSetFilter: 'form/setFilter',
+            formSetQueries: 'form/setQueries',
         }),
 
         handlePageChange(page) {
-            let filters = this.formFilters;
+            let queries = this.formQueries;
 
-            filters.page = page
+            queries.page = page
 
-            this.formSetFilter(filters);
+            this.formSetQueries(queries);
 
             router.push({
                 ...router.currentRoute,
-                query: filters
+                query: queries
             }).catch(()=> {});
 
         },
 
         handleLimitChange(limit) {
 
-            let filters = this.formFilters;
+            let queries = this.formQueries;
 
-            filters.limit = limit
+            queries.limit = limit
 
-            this.formSetFilter(filters);
+            this.formSetQueries(queries);
 
             router.push({
                 ...router.currentRoute,
-                query: filters
+                query: queries
             }).catch(()=> {});
 
-            // this.formSetFilter({limit});
+            // this.formSetQueries({limit});
         },
 
         handleSort(sortVariable) {
 
             // console.log(sortVariable)
-            let _filters = this.formFilters;
+            let _queries = this.formQueries;
 
             // reset values
             Object.keys(this.sortables).forEach((key, value) => {
@@ -132,23 +132,22 @@ export default {
                 this.sortables[sortVariable] = this.sortables[sortVariable] + 1;
             }
 
-
-            _filters.page = 0;
+            _queries.page = 0;
 
             if(this.sort[this.sortables[sortVariable]] != null) {
 
-                _filters["sort["+ sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
+                _queries["sort["+ sortVariable + "]"] = this.sort[this.sortables[sortVariable]];
             }
 
             else {
-                delete _filters['sort[' + sortVariable + ']']
+                delete _queries['sort[' + sortVariable + ']']
             }
 
-            this.formSetFilter(_filters);
+            this.formSetQueries(_queries);
 
             router.push({
                 ...router.currentRoute,
-                query: _filters
+                query: _queries
             }).catch(()=> {});
         }
     }
