@@ -25,7 +25,7 @@ class Form extends Model implements Traversable
         ],
 
         'filters' => [
-            'author.id'
+            'created_by',
         ],
 
         'sort' => [
